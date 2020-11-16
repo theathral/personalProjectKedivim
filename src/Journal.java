@@ -5,24 +5,24 @@ public class Journal extends Paper {
 
     public Journal(String title, int year, int numOfPages, int numOfCopies, String code, String publisher, String ISBN, int volume, int issue) {
         super(title, year, numOfPages, numOfCopies, code, publisher, ISBN);
-        this.volume = volume;
-        this.issue = issue;
+        setVolume(volume);
+        setIssue(issue);
     }
 
     public int getVolume() {
         return volume;
     }
 
-    public void setVolume(int volume) {
-        this.volume = volume;
+    public void setVolume(int volume) throws IllegalArgumentException {
+        this.volume = MyUtilities.checkMin(volume, 1);
     }
 
     public int getIssue() {
         return issue;
     }
 
-    public void setIssue(int issue) {
-        this.issue = issue;
+    public void setIssue(int issue) throws IllegalArgumentException {
+        this.issue = MyUtilities.checkMin(issue, 1);
     }
 
     @Override

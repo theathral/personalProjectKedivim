@@ -1,3 +1,5 @@
+import java.time.Year;
+
 public abstract class Article {
 
     private String title;
@@ -7,11 +9,11 @@ public abstract class Article {
     private String code;
 
     public Article(String title, int year, int numOfPages, int numOfCopies, String code) {
-        this.title = title;
-        this.year = year;
-        this.numOfPages = numOfPages;
-        this.numOfCopies = numOfCopies;
-        this.code = code;
+        setTitle(title);
+        setYear(year);
+        setNumOfPages(numOfPages);
+        setNumOfCopies(numOfCopies);
+        setCode(code);
     }
 
     public String getTitle() {
@@ -26,32 +28,32 @@ public abstract class Article {
         return year;
     }
 
-    public void setYear(int year) {
-        this.year = year;
+    public void setYear(int year) throws IllegalArgumentException {
+        this.year = MyUtilities.checkYear(year);
     }
 
     public int getNumOfPages() {
         return numOfPages;
     }
 
-    public void setNumOfPages(int numOfPages) {
-        this.numOfPages = numOfPages;
+    public void setNumOfPages(int numOfPages) throws IllegalArgumentException {
+        this.numOfPages = MyUtilities.checkMin(numOfPages, 1);
     }
 
     public int getNumOfCopies() {
         return numOfCopies;
     }
 
-    public void setNumOfCopies(int numOfCopies) {
-        this.numOfCopies = numOfCopies;
+    public void setNumOfCopies(int numOfCopies) throws IllegalArgumentException {
+        this.numOfCopies = MyUtilities.checkMin(numOfCopies, 0);
     }
 
     public String getCode() {
         return code;
     }
 
-    public void setCode(String code) {
-        this.code = code;
+    public void setCode(String code) throws IllegalArgumentException {
+        this.code = MyUtilities.checkString(code);
     }
 
     @Override

@@ -7,15 +7,35 @@ public class Book extends Paper {
 
     public Book(String title, int year, int numOfPages, int numOfCopies, String code, String publisher, String ISBN, ArrayList<Writer> writers) {
         super(title, year, numOfPages, numOfCopies, code, publisher, ISBN);
-        this.writers = writers;
+        setWriters(writers);
+    }
+
+    public Book(String title, int year, int numOfPages, int numOfCopies, String code, String publisher, String ISBN, Writer writer) {
+        super(title, year, numOfPages, numOfCopies, code, publisher, ISBN);
+        writers = new ArrayList<>();
+        addWriter(writer);
     }
 
     public ArrayList<Writer> getWriters() {
         return writers;
     }
 
-    public void setWriters(ArrayList<Writer> writers) {
+    public void setWriters(ArrayList<Writer> writers) throws IndexOutOfBoundsException, NullPointerException{
+        if (writers.size() >= MAX_WRITERS)
+            throw new IndexOutOfBoundsException();
+
         this.writers = writers;
+    }
+
+    public void addWriter(Writer writer) throws IndexOutOfBoundsException {
+        if (writers.size() >= MAX_WRITERS)
+            throw new IndexOutOfBoundsException();
+
+        writers.add(writer);
+    }
+
+    public Writer removeWriter(int index) throws IndexOutOfBoundsException {
+        return writers.remove(index);
     }
 
     @Override
