@@ -1,3 +1,7 @@
+package document;
+
+import utils.MyUtilities;
+
 public class Journal extends Paper {
 
     private int volume;
@@ -27,7 +31,7 @@ public class Journal extends Paper {
 
     @Override
     public String toString() {
-        return "Journal{" +
+        return "Documents.Journal{" +
                 "volume=" + volume +
                 ", issue=" + issue +
                 '}';

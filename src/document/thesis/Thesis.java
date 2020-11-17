@@ -1,29 +1,30 @@
-import java.util.ArrayList;
-import java.util.Arrays;
+package document.thesis;
 
-public class Thesis extends Article {
+import author.Author;
+import document.Document;
+import utils.MyUtilities;
 
-    private Writer writer;
+public abstract class Thesis extends Document {
+
+    private Author author;
     private String supervisor;
-    private String type;
     private String department;
     private String university;
 
-    public Thesis(String title, int year, int numOfPages, int numOfCopies, String code, Writer writer, String supervisor, String type, String department, String university) {
+    public Thesis(String title, int year, int numOfPages, int numOfCopies, String code, Author author, String supervisor, String type, String department, String university) {
         super(title, year, numOfPages, numOfCopies, code);
-        setWriter(writer);
+        setAuthor(author);
         setSupervisor(supervisor);
-        setType(type);
         setDepartment(department);
         setUniversity(university);
     }
 
-    public Writer getWriter() {
-        return writer;
+    public Author getAuthor() {
+        return author;
     }
 
-    public void setWriter(Writer writer) throws NullPointerException {
-        this.writer = writer;
+    public void setAuthor(Author author) throws NullPointerException {
+        this.author = author;
     }
 
     public String getSupervisor() {
@@ -32,19 +33,6 @@ public class Thesis extends Article {
 
     public void setSupervisor(String supervisor) {
         this.supervisor = supervisor;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        String t = type.trim().toLowerCase();
-
-        if (!t.equals("bachelor") && !t.equals("master") && !t.equals("doctoral"))
-            throw new IllegalArgumentException();
-
-        this.type = MyUtilities.checkInArrayList(type, new ArrayList<>(Arrays.asList("BACHELOR", "MASTER", "DOCTORAL")));
     }
 
     public String getDepartment() {
@@ -65,10 +53,9 @@ public class Thesis extends Article {
 
     @Override
     public String toString() {
-        return "Thesis{" +
-                "writer=" + writer +
+        return "Documents.Thesis.Thesis{" +
+                "author=" + author +
                 ", supervisor='" + supervisor + '\'' +
-                ", type='" + type + '\'' +
                 ", department='" + department + '\'' +
                 ", university='" + university + '\'' +
                 '}';

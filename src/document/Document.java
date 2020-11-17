@@ -1,6 +1,8 @@
-import java.time.Year;
+package document;
 
-public abstract class Article {
+import utils.MyUtilities;
+
+public abstract class Document {
 
     private String title;
     private int year;
@@ -8,7 +10,7 @@ public abstract class Article {
     private int numOfCopies;
     private String code;
 
-    public Article(String title, int year, int numOfPages, int numOfCopies, String code) {
+    public Document(String title, int year, int numOfPages, int numOfCopies, String code) {
         setTitle(title);
         setYear(year);
         setNumOfPages(numOfPages);
@@ -64,15 +66,15 @@ public abstract class Article {
     @Override
     public boolean equals(Object obj) {
 
-        if (!(obj instanceof Article))
+        if (!(obj instanceof Document))
             throw new IllegalArgumentException();
 
-        return code.equals(((Article) obj).code);
+        return code.equals(((Document) obj).code.trim().toUpperCase());
     }
 
     @Override
     public String toString() {
-        return "Article{" +
+        return "Documents.Document{" +
                 "title='" + title + '\'' +
                 ", year=" + year +
                 ", numOfPages=" + numOfPages +

@@ -1,8 +1,8 @@
-import com.sun.xml.internal.ws.api.ha.StickyFeature;
+package document;
 
-import javax.swing.text.Utilities;
+import utils.MyUtilities;
 
-public abstract class Paper extends Article {
+public abstract class Paper extends Document {
 
     private String publisher;
     private String ISBN;
@@ -34,12 +34,12 @@ public abstract class Paper extends Article {
         if (!(obj instanceof Paper))
             return super.equals(obj);
 
-        return ISBN.equals(((Paper) obj).ISBN);
+        return ISBN.equals(((Paper) obj).ISBN.trim().toUpperCase());
     }
 
     @Override
     public String toString() {
-        return "Paper{" +
+        return "Documents.Paper{" +
                 "publisher='" + publisher + '\'' +
                 ", ISBN='" + ISBN + '\'' +
                 '}';
