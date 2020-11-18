@@ -30,6 +30,14 @@ public class Journal extends Paper {
     }
 
     @Override
+    public void add() {
+    }
+
+    @Override
+    public void remove() {
+    }
+
+    @Override
     public String toString() {
         return "Documents.Journal{" +
                 "volume=" + volume +

@@ -29,6 +29,12 @@ public class MyUtilities {
         return num;
     }
 
+    public static int checkRange(int num, int min, int max) throws IllegalArgumentException {
+        checkMin(num, min);
+        checkMax(num, max);
+        return num;
+    }
+
     public static int checkYear(int year) throws IllegalArgumentException {
         if (year > Year.now().getValue() || year < 1500)
             throw new IllegalArgumentException();

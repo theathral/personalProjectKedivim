@@ -43,6 +43,16 @@ public class Book extends Paper {
     }
 
     @Override
+    public void add() {
+        authors.forEach(author -> author.addDocument(this));
+    }
+
+    @Override
+    public void remove() {
+        authors.forEach(author -> author.removeDocument(this));
+    }
+
+    @Override
     public String toString() {
         return super.toString();
     }

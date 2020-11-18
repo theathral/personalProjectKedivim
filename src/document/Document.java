@@ -58,6 +58,10 @@ public abstract class Document {
         this.code = MyUtilities.checkString(code);
     }
 
+    public abstract void add();
+
+    public abstract void remove();
+
     @Override
     public int hashCode() {
         return code.hashCode();
@@ -82,4 +86,5 @@ public abstract class Document {
                 ", code='" + code + '\'' +
                 '}';
     }
+
 }

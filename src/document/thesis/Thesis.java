@@ -25,6 +25,7 @@ public abstract class Thesis extends Document {
 
     public void setAuthor(Author author) throws NullPointerException {
         this.author = author;
+        add();
     }
 
     public String getSupervisor() {
@@ -49,6 +50,16 @@ public abstract class Thesis extends Document {
 
     public void setUniversity(String university) throws IllegalArgumentException {
         this.university = MyUtilities.checkString(university);
+    }
+
+    @Override
+    public void add() {
+        author.addDocument(this);
+    }
+
+    @Override
+    public void remove() {
+        author.removeDocument(this);
     }
 
     @Override

@@ -83,12 +83,12 @@ public class Library {
         documents.add(document);
     }
 
-    public void addDocument(Document document, Author author) throws IllegalArgumentException {
-        if (documents.contains(document) || authors.contains(author))
+    public void addDocument(Document document, ArrayList<Author> authors) throws IllegalArgumentException {
+        if (documents.contains(document) || this.authors.stream().anyMatch(authors::contains))
             throw new IllegalArgumentException();
 
         documents.add(document);
-        authors.add(author);
+        this.authors.addAll(authors);
     }
 
     public void addAuthor(Author author) throws IllegalArgumentException {
@@ -100,6 +100,7 @@ public class Library {
 
 
     public void deleteDocument(String code) throws IndexOutOfBoundsException {
+        getDocument(code).remove();
         documents.remove(findDocumentByCode(code));
     }
 
@@ -162,29 +163,11 @@ public class Library {
     }
 
 
+    public void loadFile(String path) {
 
+    }
 
+    public void saveToFile(String path) {
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    }
 }
