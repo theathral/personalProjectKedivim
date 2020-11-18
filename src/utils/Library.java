@@ -3,11 +3,13 @@ package utils;
 import author.Author;
 import document.*;
 import document.thesis.*;
+import org.jetbrains.annotations.NotNull;
 
+import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class Library {
+public class Library implements Serializable {
 
     private HashMap<String, Class<?>> typeOfDocuments;
     private ArrayList<Document> documents;
@@ -163,11 +165,18 @@ public class Library {
     }
 
 
-    public void loadFile(String path) {
+    public void saveToFile(String path) {
 
     }
 
-    public void saveToFile(String path) {
+    public void writeToBinaryFile(String path) throws IOException {
+        new ObjectOutputStream(new FileOutputStream(new File(path))).writeObject(this);
+    }
 
+    public Library loadFile(String path) throws IllegalArgumentException, IOException, ClassNotFoundException {
+        if (!getDocuments().isEmpty() || !getAuthors().isEmpty())
+            throw new IllegalArgumentException();
+
+        return (Library) new ObjectInputStream(new FileInputStream(new File(path))).readObject();
     }
 }
