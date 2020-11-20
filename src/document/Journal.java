@@ -39,9 +39,8 @@ public class Journal extends Paper {
 
     @Override
     public String toString() {
-        return "Documents.Journal{" +
-                "volume=" + volume +
-                ", issue=" + issue +
-                '}';
+        return "Journal: "
+                + "Volume: " + volume + System.lineSeparator()
+                + "Issue: " + issue + System.lineSeparator();
     }
 }

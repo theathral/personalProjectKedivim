@@ -39,9 +39,8 @@ public abstract class Paper extends Document {
 
     @Override
     public String toString() {
-        return "Documents.Paper{" +
-                "publisher='" + publisher + '\'' +
-                ", ISBN='" + ISBN + '\'' +
-                '}';
+        return super.toString()
+                + "Publisher: " + publisher + System.lineSeparator()
+                + "ISBN: " + ISBN + System.lineSeparator();
     }
 }

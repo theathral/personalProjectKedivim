@@ -358,7 +358,7 @@ public class UI {
             }
         } while (true);
 
-        if (inputChoiceRange(UIMsg.newObjectCreatedMsg(delDoc, "Author"), 0, 1) == 1)
+        if (inputChoiceRange(UIMsg.objectDeletionMsg(delDoc, "Document"), 0, 1) == 1)
             library.deleteDocument(delDoc.getCode());
     }
 
@@ -406,7 +406,7 @@ public class UI {
         String description = inputLine(UIMsg.inputMsg("Description", "Author"));
 
         Author newAuthor = new Author(name, dateOfBirth, null, description);
-        if (inputChoiceRange(UIMsg.objectDeletionMsg(newAuthor, "Author"), 0, 1) == 1)
+        if (inputChoiceRange(UIMsg.newObjectCreatedMsg(newAuthor, "Author"), 0, 1) == 1)
             library.addAuthor(newAuthor);
     }
 
@@ -424,7 +424,7 @@ public class UI {
             }
         } while (true);
 
-        if (inputChoiceRange(UIMsg.newObjectCreatedMsg(delAuthor, "Author"), 0, 1) == 1)
+        if (inputChoiceRange(UIMsg.objectDeletionMsg(delAuthor, "Author"), 0, 1) == 1)
             library.deleteAuthor(delAuthor.getName());
     }
 

@@ -78,13 +78,11 @@ public abstract class Document {
 
     @Override
     public String toString() {
-        return "Documents.Document{" +
-                "title='" + title + '\'' +
-                ", year=" + year +
-                ", numOfPages=" + numOfPages +
-                ", numOfCopies=" + numOfCopies +
-                ", code='" + code + '\'' +
-                '}';
+        return code + System.lineSeparator()
+                + "Title: " + title + System.lineSeparator()
+                + "Year: " + year + System.lineSeparator()
+                + "Number of Pages: " + numOfPages + System.lineSeparator()
+                + "Number of Copies: " + numOfCopies + System.lineSeparator();
     }
 
 }

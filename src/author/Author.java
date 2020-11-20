@@ -1,7 +1,6 @@
 package author;
 
 import document.Document;
-import document.Paper;
 import utils.MyUtilities;
 
 import java.util.ArrayList;
@@ -118,6 +117,19 @@ public class Author {
 
     @Override
     public String toString() {
-        return super.toString();
+        StringBuilder str = new StringBuilder();
+
+        str.append("Name: ").append(name).append(" (").append(dateOfBirth.getDate()).append(")").append(System.lineSeparator());
+        str.append("Description: ").append(description).append(System.lineSeparator());
+
+        str.append("Documents: ");
+        documents.forEach(doc -> str.append(doc.getCode()).append(", "));
+        str.append(System.lineSeparator());
+
+        str.append("Publishers: ");
+        publishers.keySet().forEach(pub -> str.append(pub).append(", "));
+        str.append(System.lineSeparator());
+
+        return str.toString();
     }
 }

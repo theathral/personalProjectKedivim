@@ -1,5 +1,6 @@
 package utils;
 
+import java.time.LocalDate;
 import java.time.Year;
 import java.util.ArrayList;
 import java.util.Date;
@@ -52,7 +53,7 @@ public class MyUtilities {
         int month = Integer.parseInt(tokens[1]);
         int year = Integer.parseInt(tokens[2]);
 
-        return new GregorianCalendar(year, month - 1, day).getTime();
+        return new Date(year, month - 1, day);
     }
 
     public static String checkInArrayList(String str, ArrayList<String> list) throws IllegalArgumentException, NullPointerException {

@@ -64,11 +64,10 @@ public abstract class Thesis extends Document {
 
     @Override
     public String toString() {
-        return "Documents.Thesis.Thesis{" +
-                "author=" + author +
-                ", supervisor='" + supervisor + '\'' +
-                ", department='" + department + '\'' +
-                ", university='" + university + '\'' +
-                '}';
+        return "Thesis: " + super.toString()
+                + "Author: " + author + System.lineSeparator()
+                + "Supervisor: " + supervisor + System.lineSeparator()
+                + "Department: " + department + System.lineSeparator()
+                + "University: " + university + System.lineSeparator();
     }
 }

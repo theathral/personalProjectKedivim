@@ -1,5 +1,7 @@
 package utils;
 
+import java.util.TreeMap;
+
 public class LibraryPrint {
 
     private static final String sep = "||--------------------||";
@@ -19,8 +21,8 @@ public class LibraryPrint {
         str.append("Stats of the Library:\n");
         str.append("Total number of Documents: ").append(library.getDocuments().size()).append("\n");
 
-        library.getTypeOfDocuments().entrySet().stream().sorted().forEach(entry -> {
-            str.append("\t").append(entry.getKey()).append(": ").append(library.countDocumentsClass(entry.getValue())).append("\n");
+        new TreeMap<>(library.getTypeOfDocuments()).forEach((key, value) -> {
+            str.append("\t").append(key).append(": ").append(library.countDocumentsClass(value)).append("\n");
         });
 
         return str.toString();
