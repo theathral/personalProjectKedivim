@@ -1,6 +1,7 @@
 package author;
 
 import document.Document;
+import document.Paper;
 import utils.MyUtilities;
 
 import java.util.ArrayList;
@@ -14,6 +15,23 @@ public class Author {
     private ArrayList<Document> documents;
     private String description;
     private HashMap<String, Integer> publishers;
+
+    public Author(String name, String dateOfBirth, ArrayList<Document> documents, String description) {
+        setName(name);
+        setDateOfBirth(dateOfBirth);
+        setDocuments(documents);
+        setDescription(description);
+        publishers = new HashMap<>();
+    }
+
+    public Author(String name, String dateOfBirth, ArrayList<Document> documents, String description, String publisher) {
+        setName(name);
+        setDateOfBirth(dateOfBirth);
+        setDocuments(documents);
+        setDescription(description);
+        publishers = new HashMap<>();
+        addPublisher(publisher);
+    }
 
     public Author(String name, String dateOfBirth, ArrayList<Document> documents, String description, HashMap<String, Integer> publishers) {
         setName(name);

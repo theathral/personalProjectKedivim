@@ -1,14 +1,24 @@
 package utils;
 
-import document.Document;
-
-import java.io.File;
-import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class UIMsg {
+
+    static String inputMsg(String type, String category) {
+        return "Enter the " + type + " of the " + category + ": ";
+    }
+
+    static String findMsg(String type, String category, String action) {
+        return "Enter the " + type + " of the " + category + " that you want to " + action + ": ";
+    }
+
+    static String wrongMsg() {
+        return "Something went wrong. Try again...\n";
+    }
+
+    static String wrongCreationMsg(String type) {
+        return "No new" + type + " has been created! Try again...\n";
+    }
 
     static String welcomeMsg() {
         return "Welcome to the virtual library!\n"
@@ -55,16 +65,12 @@ public class UIMsg {
         return "Something went wrong or there is no such file. Try again...\n";
     }
 
-    static String wrongMsg() {
-        return "Something went wrong. Try again...\n";
-    }
-
     static String libraryNotEmptyMsg() {
         return "The library is not empty. You cannot proceed this action!\n";
     }
 
     static String overrideDBMsg() {
-        return "There is another database file. Do you want to override it?\n"
+        return "There is another database file. Do you want to override it (Enter a number)?\n"
                 + "0 -> Cancel\n"
                 + "1 -> Override file\n";
     }
@@ -108,10 +114,6 @@ public class UIMsg {
         return "Enter the full name (or part of it) of the author: ";
     }
 
-    static String inputMsg(String type, String category) {
-        return "Enter the " + type + " of the " + category + ": ";
-    }
-
     static String typesListMsg(ArrayList<String> types) {
         StringBuilder str = new StringBuilder();
 
@@ -124,10 +126,40 @@ public class UIMsg {
         return str.toString();
     }
 
-    static String newDocumentCreatedMsg(Document doc) {
-        return "The new document has been created with the following details:\n"
-                + doc.toString()
-                + "Do you want to add it to the list (Enter a number)?\n";
+    static String addMoreAuthors() {
+        return "Do you want to add another Author (Enter a number)?\n"
+                + "1 -> Add more\n"
+                + "2 -> No, continue with the other attributes\n"
+                + "0 -> Cancel\n";
+    }
+
+    static String objectFoundMsg(String type) {
+        return "This " + type + " already exists. Do you want to try another one (Enter a number)?\n"
+                + "1 -> Try something else\n"
+                + "0 -> Cancel\n";
+    }
+
+    static String objectNotFoundMsg(String type) {
+        return "This " + type + " does not exist. Do you want to try another one (Enter a number)?\n"
+                + "1 -> Try something else\n"
+                + "2 -> Add a new " + type + "\n"
+                + "0 -> Cancel\n";
+    }
+
+    static String newObjectCreatedMsg(Object obj, String type) {
+        return "The new " + type + " with the following details has been created:\n"
+                + obj.toString()
+                + "Do you want to add it to the list (Enter a number)?\n"
+                + "1 -> Add to List\n"
+                + "0 -> Cancel\n";
+    }
+
+    static String objectDeletionMsg(Object obj, String type) {
+        return "The " + type + " with the following details:\n"
+                + obj.toString()
+                + "is about to be deleted. Do you want to remove it from the list (Enter a number)?\n"
+                + "1 -> Delete from List\n"
+                + "0 -> Cancel\n";
     }
 
 

@@ -9,7 +9,7 @@ public class MyUtilities {
 
     public static String checkString(String str) {
         String s = str.trim().toUpperCase();
-        if (s.equals("") || s.contains(";"))
+        if (s.equals(""))
             throw new IllegalArgumentException();
 
         return s;

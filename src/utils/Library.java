@@ -44,7 +44,7 @@ public class Library implements Serializable {
         return documents.get(index);
     }
 
-    public Document getDocument(String code) {
+    public Document getDocument(String code) throws IllegalArgumentException {
         return documents.get(findDocumentByCode(code));
     }
 
@@ -82,6 +82,7 @@ public class Library implements Serializable {
         if (documents.contains(document))
             throw new IllegalArgumentException();
 
+        document.add();
         documents.add(document);
     }
 
@@ -89,6 +90,7 @@ public class Library implements Serializable {
         if (documents.contains(document) || this.authors.stream().anyMatch(authors::contains))
             throw new IllegalArgumentException();
 
+        document.add();
         documents.add(document);
         this.authors.addAll(authors);
     }
@@ -104,6 +106,11 @@ public class Library implements Serializable {
     public void deleteDocument(String code) throws IndexOutOfBoundsException {
         getDocument(code).remove();
         documents.remove(findDocumentByCode(code));
+    }
+
+    public void deleteDocument(int index) throws IndexOutOfBoundsException {
+        getDocument(index).remove();
+        documents.remove(index);
     }
 
     public void deleteAuthor(String name) throws IndexOutOfBoundsException {

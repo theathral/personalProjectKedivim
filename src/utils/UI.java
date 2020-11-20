@@ -88,6 +88,16 @@ public class UI {
         return scanner.nextLine();
     }
 
+    private static String inputDate(String msg) {
+        do {
+            try {
+                MyUtilities.checkDate(inputLine(msg));
+                return msg;
+            } catch (Exception ignored) {
+            }
+        } while (true);
+    }
+
     private static boolean exit() {
         switch (inputChoiceRange(UIMsg.exitMsg(), 0, 1)) {
             case 0:
@@ -202,65 +212,135 @@ public class UI {
     private static void addDocument() {
         ArrayList<String> typeKeys = new ArrayList<>(library.getTypeOfDocuments().keySet());
         Document newDoc = null;
+        String code, title, publisher, isbn, supervisor, department, university;
+        int year, numOfPages, numOfCopies, volume, issue;
+        Author author = null;
+        ArrayList<Author> authorList = new ArrayList<>();
+
         int choice = inputChoiceRange(UIMsg.typesListMsg(typeKeys), 0, typeKeys.size());
-
-//        do {
-        String code = inputLine(UIMsg.inputMsg("Code", typeKeys.get(choice)));
-//            if ()
-//        } while (true);
-
-        String title = inputLine(UIMsg.inputMsg("Title", typeKeys.get(choice)));
-        int year = inputChoiceRange(UIMsg.inputMsg("Year", typeKeys.get(choice)), 1500, Year.now().getValue());
-        int numOfPages = inputChoiceMin(UIMsg.inputMsg("Number of Pages", typeKeys.get(choice)), 1);
-        int numOfCopies = inputChoiceMin(UIMsg.inputMsg("Number of Copies", typeKeys.get(choice)), 0);
-        String publisher;
-        String isbn;
-        Author author = new Author(null, null, null, null, null); //////////////////////////////////////////////////////////
-        int volume;
-        int issue;
-        String supervisor;
-        String department;
-        String university;
         String choiceStr = typeKeys.get(choice);
 
+        do {
+            try {
+                code = inputLine(UIMsg.inputMsg("Code", choiceStr));
+
+                if (library.findDocumentByCode(code) == -1)
+                    break;
+
+                if (inputChoiceRange(UIMsg.objectFoundMsg("Document"), 0, 1) == 0)
+                    return;
+            } catch (IllegalArgumentException ignored) {
+            }
+        } while (true);
+
+        title = inputLine(UIMsg.inputMsg("Title", choiceStr));
+        year = inputChoiceRange(UIMsg.inputMsg("Year", choiceStr), 1500, Year.now().getValue());
+        numOfPages = inputChoiceMin(UIMsg.inputMsg("Number of Pages", choiceStr), 1);
+        numOfCopies = inputChoiceMin(UIMsg.inputMsg("Number of Copies", choiceStr), 0);
+
         switch (choiceStr) {
-            case "Book":
+            case "Book" -> {
                 publisher = inputLine(UIMsg.inputMsg("Publisher", choiceStr));
                 isbn = inputLine(UIMsg.inputMsg("ISBN", choiceStr));
-//                author;
-                newDoc = (new Book(title, year, numOfPages, numOfCopies, code, publisher, isbn, author));
-                break;
-            case "Journal":
+
+                int curAuthors = 0;
+                do {
+                    do {
+                        try {
+                            String name = inputLine(UIMsg.inputMsg("Name", choiceStr));
+
+                            int index = library.findAuthor(name);
+                            if (index != -1) {
+                                authorList.add(library.getAuthor(index));
+                                break;
+                            }
+
+                            int newAuthorChoice = inputChoiceRange(UIMsg.objectNotFoundMsg("Author"), 0, 2);
+                            if (newAuthorChoice == 0)
+                                return;
+                            else if (newAuthorChoice == 1)
+                                break;
+                            else if (newAuthorChoice == 2) {
+                                int authorSize = library.getAuthors().size();
+                                addAuthor();
+                                if (library.getAuthors().size() == authorSize + 1) {
+                                    authorList.add(library.getAuthor(library.getAuthors().size() - 1));
+                                    break;
+                                } else
+                                    System.out.println(UIMsg.wrongCreationMsg("Author"));
+                            } else
+                                throw new RuntimeException();
+                        } catch (IllegalArgumentException ignored) {
+                        }
+                    } while (true);
+
+                    curAuthors++;
+                    if (curAuthors >= 5)
+                        break;
+
+                    int addMoreAuthorsChoice = inputChoiceRange(UIMsg.addMoreAuthors(), 0, 2);
+                    if (addMoreAuthorsChoice == 0)
+                        return;
+                    else if (addMoreAuthorsChoice == 2)
+                        break;
+                    else if (addMoreAuthorsChoice != 1)
+                        throw new RuntimeException();
+                } while (true);
+
+                newDoc = (new Book(title, year, numOfPages, numOfCopies, code, publisher, isbn, authorList));
+            }
+            case "Journal" -> {
                 publisher = inputLine(UIMsg.inputMsg("Publisher", choiceStr));
                 isbn = inputLine(UIMsg.inputMsg("ISBN", choiceStr));
                 volume = inputChoiceMin(UIMsg.inputMsg("Volume", choiceStr), 1);
                 issue = inputChoiceMin(UIMsg.inputMsg("Issue", choiceStr), 0);
                 newDoc = new Journal(title, year, numOfPages, numOfCopies, code, publisher, isbn, volume, issue);
-                break;
-            case "Bachelor Thesis":
-            case "Master Thesis":
-            case "Doctoral Thesis":
-//                author;
+            }
+            case "Bachelor Thesis", "Master Thesis", "Doctoral Thesis" -> {
                 supervisor = inputLine(UIMsg.inputMsg("Supervisor", choiceStr));
                 department = inputLine(UIMsg.inputMsg("Department", choiceStr));
                 university = inputLine(UIMsg.inputMsg("University", choiceStr));
-                switch (choiceStr) {
-                    case "Bachelor Thesis":
-                        newDoc = (new BachelorThesis(title, year, numOfPages, numOfCopies, code, author, supervisor, department, university));
-                        break;
-                    case "Master Thesis":
-                        newDoc = (new MasterThesis(title, year, numOfPages, numOfCopies, code, author, supervisor, department, university));
-                        break;
-                    case "Doctoral Thesis":
-                        newDoc = (new DoctoralThesis(title, year, numOfPages, numOfCopies, code, author, supervisor, department, university));
-                        break;
-                }
-                break;
-            default:
-                throw new RuntimeException();
+
+                do {
+                    try {
+                        String name = inputLine(UIMsg.inputMsg("Name", choiceStr));
+
+                        int index = library.findAuthor(name);
+                        if (index != -1) {
+                            author = library.getAuthor(index);
+                            break;
+                        }
+
+                        int newAuthorChoice = inputChoiceRange(UIMsg.objectNotFoundMsg("Author"), 0, 2);
+                        if (newAuthorChoice == 0)
+                            return;
+                        else if (newAuthorChoice == 1)
+                            break;
+                        else if (newAuthorChoice == 2) {
+                            int authorSize = library.getAuthors().size();
+                            addAuthor();
+                            if (library.getAuthors().size() == authorSize + 1) {
+                                author = library.getAuthor(library.getAuthors().size() - 1);
+                                break;
+                            } else
+                                System.out.println(UIMsg.wrongCreationMsg("Author"));
+                        } else
+                            throw new RuntimeException();
+                    } catch (IllegalArgumentException ignored) {
+                    }
+                } while (true);
+
+                newDoc = switch (choiceStr) {
+                    case "Bachelor Thesis" -> (new BachelorThesis(title, year, numOfPages, numOfCopies, code, author, supervisor, department, university));
+                    case "Master Thesis" -> (new MasterThesis(title, year, numOfPages, numOfCopies, code, author, supervisor, department, university));
+                    case "Doctoral Thesis" -> (new DoctoralThesis(title, year, numOfPages, numOfCopies, code, author, supervisor, department, university));
+                    default -> newDoc;
+                };
+            }
+            default -> throw new RuntimeException();
         }
 
-        if (inputChoiceRange(UIMsg.newDocumentCreatedMsg(newDoc), 0, 1) == 1)
+        if (inputChoiceRange(UIMsg.newObjectCreatedMsg(newDoc, "Document"), 0, 1) == 1)
             library.addDocument(newDoc);
     }
 
@@ -268,6 +348,18 @@ public class UI {
     }
 
     private static void deleteDocument() {
+        Document delDoc;
+
+        do {
+            try {
+                delDoc = library.getDocument(inputLine(UIMsg.findMsg("Code", "Document", "delete")));
+                break;
+            } catch (IllegalArgumentException ignored) {
+            }
+        } while (true);
+
+        if (inputChoiceRange(UIMsg.newObjectCreatedMsg(delDoc, "Author"), 0, 1) == 1)
+            library.deleteDocument(delDoc.getCode());
     }
 
 
@@ -296,15 +388,44 @@ public class UI {
         } while (true);
     }
 
-
     private static void addAuthor() {
+        String name;
+        do {
+            try {
+                name = inputLine(UIMsg.inputMsg("Name", "Author"));
+                if (library.findAuthor(name) == -1)
+                    break;
+
+                if (inputChoiceRange(UIMsg.objectFoundMsg("Author"), 0, 1) == 0)
+                    return;
+            } catch (IllegalArgumentException ignored) {
+            }
+        } while (true);
+
+        String dateOfBirth = inputDate(UIMsg.inputMsg("Date of Birth (d-m-Y)", "Author"));
+        String description = inputLine(UIMsg.inputMsg("Description", "Author"));
+
+        Author newAuthor = new Author(name, dateOfBirth, null, description);
+        if (inputChoiceRange(UIMsg.objectDeletionMsg(newAuthor, "Author"), 0, 1) == 1)
+            library.addAuthor(newAuthor);
     }
 
     private static void modifyAuthor() {
     }
 
     private static void deleteAuthor() {
+        Author delAuthor;
 
+        do {
+            try {
+                delAuthor = library.getAuthor(inputLine(UIMsg.findMsg("Name", "Author", "delete")));
+                break;
+            } catch (IllegalArgumentException ignored) {
+            }
+        } while (true);
+
+        if (inputChoiceRange(UIMsg.newObjectCreatedMsg(delAuthor, "Author"), 0, 1) == 1)
+            library.deleteAuthor(delAuthor.getName());
     }
 
 }
