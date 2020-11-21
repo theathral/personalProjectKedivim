@@ -21,7 +21,7 @@ public class LibraryPrint {
         str.append("Stats of the Library:").append(System.lineSeparator());
         str.append("Total number of Documents: ").append(library.getDocuments().size()).append(System.lineSeparator());
 
-        new TreeMap<>(library.getTypeOfDocuments()).forEach((key, value) ->
+        library.getTypeOfDocuments().forEach((key, value) ->
                 str.append("\t").append(key).append(": ").append(library.countDocumentsClass(value)).append(System.lineSeparator()));
 
         return str.toString();
@@ -61,6 +61,9 @@ public class LibraryPrint {
 
         str.append("Documents of the Library with the title: ").append(title).append(System.lineSeparator());
         str.append(sep).append(System.lineSeparator()).append(System.lineSeparator());
+
+        if (library.getDocumentWithTitle(title).isEmpty())
+            throw new IndexOutOfBoundsException();
 
         library.getDocumentWithTitle(title).forEach(doc -> {
             str.append(doc);

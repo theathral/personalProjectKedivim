@@ -17,13 +17,14 @@ import java.util.Scanner;
 
 public class UI {
 
-    private static final String PATH = "libraryDB.txt";
+    private static final String PATH = "libDB.bin";
 
     private static Library library = new Library();
     private static final Scanner scanner = new Scanner(System.in);
 
     public static void main(String[] args) {
         System.out.println(UIMsg.welcomeMsg());
+        pressEnter();
 
         do {
             switch (inputChoiceRange(UIMsg.mainMenu(), 0, 5)) {
@@ -176,6 +177,7 @@ public class UI {
                     return;
                 case 1:
                     System.out.println(new LibraryPrint(library).printDocuments());
+                    pressEnter();
                     break;
                 case 2:
                     searchDocument();
@@ -196,21 +198,37 @@ public class UI {
     }
 
     private static void searchDocument() {
-        switch (inputChoiceRange(UIMsg.searchDocumentMsg(), 0, 2)) {
-            case 0:
+        do {
+            try {
+                switch (inputChoiceRange(UIMsg.searchDocumentMsg(), 0, 2)) {
+                    case 0:
+                        return;
+                    case 1:
+                        System.out.println(new LibraryPrint(library).printDocumentWithCode(inputLine(UIMsg.searchDocByCodeMsg())));
+                        break;
+                    case 2:
+                        System.out.println(new LibraryPrint(library).printDocumentWithTitle(inputLine(UIMsg.searchDocByTitleMsg())));
+                        break;
+                    default:
+                        throw new RuntimeException();
+                }
+                pressEnter();
                 return;
-            case 1:
-                System.out.println(new LibraryPrint(library).printDocumentWithCode(inputLine(UIMsg.searchDocByCodeMsg())));
-                break;
-            case 2:
-                System.out.println(new LibraryPrint(library).printDocumentWithTitle(inputLine(UIMsg.searchDocByTitleMsg())));
-                break;
-            default:
-                throw new RuntimeException();
-        }
-
+            } catch (IndexOutOfBoundsException e) {
+                switch (inputChoiceRange(UIMsg.objectNotFoundAndAddMsg("Document"), 0, 2)) {
+                    case 0:
+                        return;
+                    case 1:
+                        break;
+                    case 2:
+                        addDocument();
+                        return;
+                    default:
+                        throw new RuntimeException();
+                }
+            }
+        } while (true);
     }
-
 
     private static void addDocument() {
         ArrayList<String> typeKeys = new ArrayList<>(library.getTypeOfDocuments().keySet());
@@ -221,7 +239,7 @@ public class UI {
         ArrayList<Author> authorList = new ArrayList<>();
 
         int choice = inputChoiceRange(UIMsg.typesListMsg(typeKeys), 0, typeKeys.size());
-        String choiceStr = typeKeys.get(choice);
+        String choiceStr = typeKeys.get(choice - 1);
 
         do {
             try {
@@ -250,7 +268,7 @@ public class UI {
                 do {
                     do {
                         try {
-                            String name = inputLine(UIMsg.inputMsg("Name", choiceStr));
+                            String name = inputLine(UIMsg.inputMsg("Name", "Author"));
 
                             int index = library.findAuthor(name);
                             if (index != -1) {
@@ -306,7 +324,7 @@ public class UI {
 
                 do {
                     try {
-                        String name = inputLine(UIMsg.inputMsg("Name", choiceStr));
+                        String name = inputLine(UIMsg.inputMsg("Name", "Author"));
 
                         int index = library.findAuthor(name);
                         if (index != -1) {
@@ -373,6 +391,7 @@ public class UI {
                     return;
                 case 1:
                     System.out.println(new LibraryPrint(library).printAuthors());
+                    pressEnter();
                     break;
                 case 2:
                     searchAuthor();
@@ -396,6 +415,7 @@ public class UI {
         do {
             try {
                 System.out.println(new LibraryPrint(library).printAuthor(inputLine(UIMsg.searchAuthorMsg())));
+                pressEnter();
                 return;
             } catch (IndexOutOfBoundsException e) {
                 switch (inputChoiceRange(UIMsg.objectNotFoundAndAddMsg("Author"), 0, 2)) {

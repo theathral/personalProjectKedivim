@@ -9,10 +9,11 @@ import document.thesis.*;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.TreeMap;
 
 public class Library implements Serializable {
 
-    private HashMap<String, Class<?>> typeOfDocuments;
+    private TreeMap<String, Class<?>> typeOfDocuments;
     private ArrayList<Document> documents;
     private ArrayList<Author> authors;
 
@@ -22,12 +23,12 @@ public class Library implements Serializable {
         documents = new ArrayList<>();
     }
 
-    public HashMap<String, Class<?>> getTypeOfDocuments() {
+    public TreeMap<String, Class<?>> getTypeOfDocuments() {
         return typeOfDocuments;
     }
 
     private void setTypeOfDocuments() {
-        this.typeOfDocuments = new HashMap<>();
+        this.typeOfDocuments = new TreeMap<>();
 
         typeOfDocuments.put("Book", Book.class);
         typeOfDocuments.put("Journal", Journal.class);
@@ -45,7 +46,7 @@ public class Library implements Serializable {
         return documents.get(index);
     }
 
-    public Document getDocument(String code) throws IllegalArgumentException {
+    public Document getDocument(String code) throws IndexOutOfBoundsException {
         return documents.get(findDocumentByCode(code));
     }
 

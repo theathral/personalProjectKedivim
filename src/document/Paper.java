@@ -34,7 +34,7 @@ public abstract class Paper extends Document {
         if (!(obj instanceof Paper))
             return super.equals(obj);
 
-        return ISBN.equals(((Paper) obj).ISBN.trim().toUpperCase());
+        return super.equals(obj) && ISBN.equals(((Paper) obj).ISBN.trim().toUpperCase());
     }
 
     @Override

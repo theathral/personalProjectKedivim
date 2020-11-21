@@ -65,7 +65,7 @@ public abstract class Thesis extends Document {
     @Override
     public String toString() {
         return "Thesis: " + super.toString()
-                + "Author: " + author + System.lineSeparator()
+                + "Author: " + author.getName() + System.lineSeparator()
                 + "Supervisor: " + supervisor + System.lineSeparator()
                 + "Department: " + department + System.lineSeparator()
                 + "University: " + university + System.lineSeparator();

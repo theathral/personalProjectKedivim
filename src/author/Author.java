@@ -61,7 +61,7 @@ public class Author implements Serializable {
 
     public void addDocument(Document document) throws IndexOutOfBoundsException {
         if (documents.contains(document))
-            throw new IllegalArgumentException();
+            throw new IndexOutOfBoundsException();
 
         documents.add(document);
     }

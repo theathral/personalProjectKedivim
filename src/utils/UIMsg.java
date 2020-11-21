@@ -117,11 +117,11 @@ public class UIMsg {
     static String typesListMsg(ArrayList<String> types) {
         StringBuilder str = new StringBuilder();
 
-        str.append("What kind of document do you want to add? (Enter a number)?").append(System.lineSeparator());
+        str.append("What kind of document do you want to add? (Enter a number)").append(System.lineSeparator());
         for (int i = 0; i < types.size(); i++) {
-            str.append(i).append(" -> ").append(types.get(i)).append("").append(System.lineSeparator());
+            str.append(i + 1).append(" -> ").append(types.get(i)).append(System.lineSeparator());
         }
-        str.append("0 -> Cancel");
+        str.append("0 -> Cancel").append(System.lineSeparator());
 
         return str.toString();
     }
@@ -167,6 +167,5 @@ public class UIMsg {
                 + "1 -> Delete from List" + System.lineSeparator()
                 + "0 -> Cancel" + System.lineSeparator();
     }
-
 
 }

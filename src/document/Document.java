@@ -71,7 +71,6 @@ public abstract class Document implements Serializable {
 
     @Override
     public boolean equals(Object obj) {
-
         if (!(obj instanceof Document))
             throw new IllegalArgumentException();
 
