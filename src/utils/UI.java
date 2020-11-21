@@ -45,6 +45,7 @@ public class UI {
                     break;
                 case 5:
                     System.out.println(new LibraryPrint(library).printStats());
+                    pressEnter();
                     break;
                 default:
                     throw new RuntimeException();
@@ -53,6 +54,9 @@ public class UI {
 
     }
 
+    private static void pressEnter() {
+        inputLine("Press enter to continue...");
+    }
 
     private static int inputChoiceRange(String msg, int min, int max) {
         do {
@@ -138,8 +142,10 @@ public class UI {
                 }
             } catch (IOException | ClassNotFoundException e) {
                 System.out.println(UIMsg.wrongFileMsg());
+                pressEnter();
             } catch (IllegalArgumentException e) {
                 System.out.println(UIMsg.libraryNotEmptyMsg());
+                pressEnter();
                 return;
             }
         } while (true);
