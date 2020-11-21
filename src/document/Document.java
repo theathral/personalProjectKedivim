@@ -2,7 +2,9 @@ package document;
 
 import utils.MyUtilities;
 
-public abstract class Document {
+import java.io.Serializable;
+
+public abstract class Document implements Serializable {
 
     private String title;
     private int year;

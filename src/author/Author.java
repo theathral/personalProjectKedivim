@@ -3,41 +3,32 @@ package author;
 import document.Document;
 import utils.MyUtilities;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
+import java.io.Serializable;
+import java.time.ZonedDateTime;
+import java.util.*;
 
-public class Author {
+public class Author implements Serializable {
 
     private String name;
-    private Date dateOfBirth;
+    private ZonedDateTime dateOfBirth;
     private ArrayList<Document> documents;
     private String description;
     private HashMap<String, Integer> publishers;
 
-    public Author(String name, String dateOfBirth, ArrayList<Document> documents, String description) {
+    public Author(String name, ZonedDateTime dateOfBirth, String description) {
+        setName(name);
+        setDateOfBirth(dateOfBirth);
+        documents = new ArrayList<>();
+        setDescription(description);
+        publishers = new HashMap<>();
+    }
+
+    public Author(String name, ZonedDateTime dateOfBirth, ArrayList<Document> documents, String description) {
         setName(name);
         setDateOfBirth(dateOfBirth);
         setDocuments(documents);
         setDescription(description);
         publishers = new HashMap<>();
-    }
-
-    public Author(String name, String dateOfBirth, ArrayList<Document> documents, String description, String publisher) {
-        setName(name);
-        setDateOfBirth(dateOfBirth);
-        setDocuments(documents);
-        setDescription(description);
-        publishers = new HashMap<>();
-        addPublisher(publisher);
-    }
-
-    public Author(String name, String dateOfBirth, ArrayList<Document> documents, String description, HashMap<String, Integer> publishers) {
-        setName(name);
-        setDateOfBirth(dateOfBirth);
-        setDocuments(documents);
-        setDescription(description);
-        setPublishers(publishers);
     }
 
     public String getName() {
@@ -48,12 +39,16 @@ public class Author {
         this.name = MyUtilities.checkString(name);
     }
 
-    public Date getDateOfBirth() {
+    public ZonedDateTime getDateOfBirth() {
         return dateOfBirth;
     }
 
     public void setDateOfBirth(String dateOfBirth) throws IllegalArgumentException {
         this.dateOfBirth = MyUtilities.checkDate(dateOfBirth);
+    }
+
+    public void setDateOfBirth(ZonedDateTime dateOfBirth) throws IllegalArgumentException {
+        this.dateOfBirth = dateOfBirth;
     }
 
     public ArrayList<Document> getDocuments() {
@@ -119,7 +114,14 @@ public class Author {
     public String toString() {
         StringBuilder str = new StringBuilder();
 
-        str.append("Name: ").append(name).append(" (").append(dateOfBirth.getDate()).append(")").append(System.lineSeparator());
+        str.append("Name: ").append(name);
+        str.append(" (")
+                .append(dateOfBirth.getDayOfMonth())
+                .append("-")
+                .append(dateOfBirth.getMonth())
+                .append("-")
+                .append(dateOfBirth.getYear())
+                .append(")").append(System.lineSeparator());
         str.append("Description: ").append(description).append(System.lineSeparator());
 
         str.append("Documents: ");

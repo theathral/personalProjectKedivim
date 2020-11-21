@@ -1,9 +1,10 @@
 package utils;
 
 import author.Author;
-import document.*;
+import document.Book;
+import document.Document;
+import document.Journal;
 import document.thesis.*;
-import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -64,7 +65,7 @@ public class Library implements Serializable {
         return authors.get(index);
     }
 
-    public Author getAuthor(String name) {
+    public Author getAuthor(String name) throws IndexOutOfBoundsException {
         return authors.get(findAuthor(name));
     }
 

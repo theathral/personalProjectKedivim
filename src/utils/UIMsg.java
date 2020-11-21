@@ -111,7 +111,7 @@ public class UIMsg {
     }
 
     static String searchAuthorMsg() {
-        return "Enter the full name (or part of it) of the author: ";
+        return "Enter the full name of the author: ";
     }
 
     static String typesListMsg(ArrayList<String> types) {

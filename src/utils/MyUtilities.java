@@ -1,10 +1,8 @@
 package utils;
 
-import java.time.LocalDate;
 import java.time.Year;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.GregorianCalendar;
+import java.time.ZonedDateTime;
+import java.util.*;
 
 public class MyUtilities {
 
@@ -43,7 +41,7 @@ public class MyUtilities {
         return year;
     }
 
-    public static Date checkDate(String date) throws IllegalArgumentException {
+    public static ZonedDateTime checkDate(String date) throws IllegalArgumentException {
         String[] tokens = date.split("-");
 
         if (tokens.length != 3)
@@ -53,7 +51,7 @@ public class MyUtilities {
         int month = Integer.parseInt(tokens[1]);
         int year = Integer.parseInt(tokens[2]);
 
-        return new Date(year, month - 1, day);
+        return new GregorianCalendar(year, month - 1, day).toZonedDateTime();
     }
 
     public static String checkInArrayList(String str, ArrayList<String> list) throws IllegalArgumentException, NullPointerException {

@@ -11,6 +11,7 @@ import document.thesis.MasterThesis;
 import java.io.File;
 import java.io.IOException;
 import java.time.Year;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -88,11 +89,10 @@ public class UI {
         return scanner.nextLine();
     }
 
-    private static String inputDate(String msg) {
+    private static ZonedDateTime inputDate(String msg) {
         do {
             try {
-                MyUtilities.checkDate(inputLine(msg));
-                return msg;
+                return MyUtilities.checkDate(inputLine(msg));
             } catch (Exception ignored) {
             }
         } while (true);
@@ -154,14 +154,16 @@ public class UI {
                         case 0:
                             return;
                         case 1:
-                            library.writeToBinaryFile(PATH);
-                            return;
+                            break;
                         default:
                             throw new RuntimeException();
                     }
                 }
+                library.writeToBinaryFile(PATH);
+                return;
             } catch (IOException e) {
                 System.out.println(UIMsg.wrongMsg());
+                System.out.println(e.toString());
             }
         } while (true);
     }
@@ -174,6 +176,7 @@ public class UI {
                     return;
                 case 1:
                     System.out.println(new LibraryPrint(library).printDocuments());
+                    break;
                 case 2:
                     searchDocument();
                     break;
@@ -370,8 +373,9 @@ public class UI {
                     return;
                 case 1:
                     System.out.println(new LibraryPrint(library).printAuthors());
+                    break;
                 case 2:
-                    System.out.println(new LibraryPrint(library).printAuthor(inputLine(UIMsg.searchAuthorMsg())));
+                    searchAuthor();
                     break;
                 case 3:
                     addAuthor();
@@ -384,6 +388,27 @@ public class UI {
                     break;
                 default:
                     throw new RuntimeException();
+            }
+        } while (true);
+    }
+
+    private static void searchAuthor() {
+        do {
+            try {
+                System.out.println(new LibraryPrint(library).printAuthor(inputLine(UIMsg.searchAuthorMsg())));
+                return;
+            } catch (IndexOutOfBoundsException e) {
+                switch (inputChoiceRange(UIMsg.objectNotFoundMsg("Author"), 0, 2)) {
+                    case 0:
+                        return;
+                    case 1:
+                        break;
+                    case 2:
+                        addAuthor();
+                        return;
+                    default:
+                        throw new RuntimeException();
+                }
             }
         } while (true);
     }
@@ -402,10 +427,10 @@ public class UI {
             }
         } while (true);
 
-        String dateOfBirth = inputDate(UIMsg.inputMsg("Date of Birth (d-m-Y)", "Author"));
+        ZonedDateTime dateOfBirth = inputDate(UIMsg.inputMsg("Date of Birth (d-m-Y)", "Author"));
         String description = inputLine(UIMsg.inputMsg("Description", "Author"));
 
-        Author newAuthor = new Author(name, dateOfBirth, null, description);
+        Author newAuthor = new Author(name, dateOfBirth, description);
         if (inputChoiceRange(UIMsg.newObjectCreatedMsg(newAuthor, "Author"), 0, 1) == 1)
             library.addAuthor(newAuthor);
     }
@@ -420,6 +445,9 @@ public class UI {
             try {
                 delAuthor = library.getAuthor(inputLine(UIMsg.findMsg("Name", "Author", "delete")));
                 break;
+            } catch (IndexOutOfBoundsException e) {
+                if (inputChoiceRange(UIMsg.objectNotFoundMsg("Author"), 0, 1) == 0)
+                    return;
             } catch (IllegalArgumentException ignored) {
             }
         } while (true);
