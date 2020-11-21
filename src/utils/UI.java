@@ -64,6 +64,16 @@ public class UI {
         } while (true);
     }
 
+    private static boolean inputChoiceBoolean(String msg) {
+        do {
+            try {
+                System.out.print(msg);
+                return MyUtilities.checkRange(Integer.parseInt(scanner.nextLine()), 0, 1) == 1;
+            } catch (Exception ignored) {
+            }
+        } while (true);
+    }
+
     private static int inputChoiceMin(String msg, int min) {
         do {
             try {
@@ -99,27 +109,16 @@ public class UI {
     }
 
     private static boolean exit() {
-        switch (inputChoiceRange(UIMsg.exitMsg(), 0, 1)) {
-            case 0:
-                return false;
-            case 1:
-                saveToDBBeforeExit();
-                return true;
-            default:
-                throw new RuntimeException();
+        if (inputChoiceBoolean(UIMsg.exitMsg())) {
+            saveToDBBeforeExit();
+            return true;
         }
+        return false;
     }
 
     private static void saveToDBBeforeExit() {
-        switch (inputChoiceRange(UIMsg.saveToDBBeforeExitMsg(), 0, 1)) {
-            case 0:
-                return;
-            case 1:
-                saveToDB();
-                return;
-            default:
-                throw new RuntimeException();
-        }
+        if (inputChoiceBoolean(UIMsg.saveToDBBeforeExitMsg()))
+            saveToDB();
     }
 
     private static void loadDB() {
@@ -150,14 +149,9 @@ public class UI {
         do {
             try {
                 if (new File(PATH).isFile()) {
-                    switch (inputChoiceRange(UIMsg.overrideDBMsg(), 0, 1)) {
-                        case 0:
-                            return;
-                        case 1:
-                            break;
-                        default:
-                            throw new RuntimeException();
-                    }
+                    if (!inputChoiceBoolean(UIMsg.overrideDBMsg()))
+                        return;
+                    break;
                 }
                 library.writeToBinaryFile(PATH);
                 return;
@@ -230,7 +224,7 @@ public class UI {
                 if (library.findDocumentByCode(code) == -1)
                     break;
 
-                if (inputChoiceRange(UIMsg.objectFoundMsg("Document"), 0, 1) == 0)
+                if (!inputChoiceBoolean(UIMsg.objectFoundMsg("Document")))
                     return;
             } catch (IllegalArgumentException ignored) {
             }
@@ -258,7 +252,7 @@ public class UI {
                                 break;
                             }
 
-                            int newAuthorChoice = inputChoiceRange(UIMsg.objectNotFoundMsg("Author"), 0, 2);
+                            int newAuthorChoice = inputChoiceRange(UIMsg.objectNotFoundAndAddMsg("Author"), 0, 2);
                             if (newAuthorChoice == 0)
                                 return;
                             else if (newAuthorChoice == 1)
@@ -314,7 +308,7 @@ public class UI {
                             break;
                         }
 
-                        int newAuthorChoice = inputChoiceRange(UIMsg.objectNotFoundMsg("Author"), 0, 2);
+                        int newAuthorChoice = inputChoiceRange(UIMsg.objectNotFoundAndAddMsg("Author"), 0, 2);
                         if (newAuthorChoice == 0)
                             return;
                         else if (newAuthorChoice == 1)
@@ -343,7 +337,7 @@ public class UI {
             default -> throw new RuntimeException();
         }
 
-        if (inputChoiceRange(UIMsg.newObjectCreatedMsg(newDoc, "Document"), 0, 1) == 1)
+        if (inputChoiceBoolean(UIMsg.newObjectCreatedMsg(newDoc, "Document")))
             library.addDocument(newDoc);
     }
 
@@ -361,7 +355,7 @@ public class UI {
             }
         } while (true);
 
-        if (inputChoiceRange(UIMsg.objectDeletionMsg(delDoc, "Document"), 0, 1) == 1)
+        if (inputChoiceBoolean(UIMsg.objectDeletionMsg(delDoc, "Document")))
             library.deleteDocument(delDoc.getCode());
     }
 
@@ -398,7 +392,7 @@ public class UI {
                 System.out.println(new LibraryPrint(library).printAuthor(inputLine(UIMsg.searchAuthorMsg())));
                 return;
             } catch (IndexOutOfBoundsException e) {
-                switch (inputChoiceRange(UIMsg.objectNotFoundMsg("Author"), 0, 2)) {
+                switch (inputChoiceRange(UIMsg.objectNotFoundAndAddMsg("Author"), 0, 2)) {
                     case 0:
                         return;
                     case 1:
@@ -421,7 +415,7 @@ public class UI {
                 if (library.findAuthor(name) == -1)
                     break;
 
-                if (inputChoiceRange(UIMsg.objectFoundMsg("Author"), 0, 1) == 0)
+                if (!inputChoiceBoolean(UIMsg.objectFoundMsg("Author")))
                     return;
             } catch (IllegalArgumentException ignored) {
             }
@@ -431,7 +425,7 @@ public class UI {
         String description = inputLine(UIMsg.inputMsg("Description", "Author"));
 
         Author newAuthor = new Author(name, dateOfBirth, description);
-        if (inputChoiceRange(UIMsg.newObjectCreatedMsg(newAuthor, "Author"), 0, 1) == 1)
+        if (inputChoiceBoolean(UIMsg.newObjectCreatedMsg(newAuthor, "Author")))
             library.addAuthor(newAuthor);
     }
 
@@ -446,13 +440,13 @@ public class UI {
                 delAuthor = library.getAuthor(inputLine(UIMsg.findMsg("Name", "Author", "delete")));
                 break;
             } catch (IndexOutOfBoundsException e) {
-                if (inputChoiceRange(UIMsg.objectNotFoundMsg("Author"), 0, 1) == 0)
+                if (!inputChoiceBoolean(UIMsg.objectNotFoundMsg("Author")))
                     return;
             } catch (IllegalArgumentException ignored) {
             }
         } while (true);
 
-        if (inputChoiceRange(UIMsg.objectDeletionMsg(delAuthor, "Author"), 0, 1) == 1)
+        if (inputChoiceBoolean(UIMsg.objectDeletionMsg(delAuthor, "Author")))
             library.deleteAuthor(delAuthor.getName());
     }
 

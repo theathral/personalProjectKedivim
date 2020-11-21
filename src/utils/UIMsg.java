@@ -142,6 +142,12 @@ public class UIMsg {
     static String objectNotFoundMsg(String type) {
         return "This " + type + " does not exist. Do you want to try another one? (Enter a number)" + System.lineSeparator()
                 + "1 -> Try something else" + System.lineSeparator()
+                + "0 -> Cancel" + System.lineSeparator();
+    }
+
+    static String objectNotFoundAndAddMsg(String type) {
+        return "This " + type + " does not exist. Do you want to try another one? (Enter a number)" + System.lineSeparator()
+                + "1 -> Try something else" + System.lineSeparator()
                 + "2 -> Add a new " + type + "" + System.lineSeparator()
                 + "0 -> Cancel" + System.lineSeparator();
     }
