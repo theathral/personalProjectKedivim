@@ -7,6 +7,7 @@ import document.Journal;
 import document.thesis.BachelorThesis;
 import document.thesis.DoctoralThesis;
 import document.thesis.MasterThesis;
+import document.thesis.Thesis;
 
 import java.io.File;
 import java.io.IOException;
@@ -56,7 +57,8 @@ public class UI {
     }
 
     private static void pressEnter() {
-        inputLine("Press enter to continue...");
+        System.out.print("Press enter to continue...");
+        scanner.nextLine();
     }
 
     private static int inputChoiceRange(String msg, int min, int max) {
@@ -101,7 +103,7 @@ public class UI {
 
     private static String inputLine(String msg) {
         System.out.print(msg);
-        return scanner.nextLine();
+        return MyUtilities.checkString(scanner.nextLine());
     }
 
     private static ZonedDateTime inputDate(String msg) {
@@ -352,17 +354,18 @@ public class UI {
                 } while (true);
 
                 newDoc = switch (choiceStr) {
-                    case "Bachelor Thesis" -> (new BachelorThesis(title, year, numOfPages, numOfCopies, code, author, supervisor, department, university));
-                    case "Master Thesis" -> (new MasterThesis(title, year, numOfPages, numOfCopies, code, author, supervisor, department, university));
-                    case "Doctoral Thesis" -> (new DoctoralThesis(title, year, numOfPages, numOfCopies, code, author, supervisor, department, university));
+                    case "Bachelor Thesis" -> (new BachelorThesis(title, year, numOfPages, numOfCopies, code, supervisor, department, university));
+                    case "Master Thesis" -> (new MasterThesis(title, year, numOfPages, numOfCopies, code, supervisor, department, university));
+                    case "Doctoral Thesis" -> (new DoctoralThesis(title, year, numOfPages, numOfCopies, code, supervisor, department, university));
                     default -> newDoc;
                 };
             }
             default -> throw new RuntimeException();
         }
 
-        if (inputChoiceBoolean(UIMsg.newObjectCreatedMsg(newDoc, "Document")))
-            library.addDocument(newDoc);
+        if (inputChoiceBoolean(UIMsg.newObjectCreatedMsg(newDoc, "Document"))) {
+            library.addDocument(newDoc, author);
+        }
     }
 
     private static void modifyDocument() {

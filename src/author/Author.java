@@ -1,6 +1,7 @@
 package author;
 
 import document.Document;
+import document.thesis.Thesis;
 import utils.MyUtilities;
 
 import java.io.Serializable;
@@ -60,6 +61,9 @@ public class Author implements Serializable {
     }
 
     public void addDocument(Document document) throws IndexOutOfBoundsException {
+        System.out.println("////////////" + document.getCode());
+        System.out.println("////////////" + ((Thesis) document).getAuthor());
+
         if (documents.contains(document))
             throw new IndexOutOfBoundsException();
 

@@ -60,7 +60,7 @@ public abstract class Document implements Serializable {
         this.code = MyUtilities.checkString(code);
     }
 
-    public abstract void add();
+    public abstract void add(Object obj) throws IllegalArgumentException;
 
     public abstract void remove();
 

@@ -9,6 +9,11 @@ public class Book extends Paper {
     private static final int MAX_AUTHORS = 5;
     private ArrayList<Author> authors;
 
+    public Book(String title, int year, int numOfPages, int numOfCopies, String code, String publisher, String ISBN) {
+        super(title, year, numOfPages, numOfCopies, code, publisher, ISBN);
+        authors = new ArrayList<>();
+    }
+
     public Book(String title, int year, int numOfPages, int numOfCopies, String code, String publisher, String ISBN, ArrayList<Author> authors) {
         super(title, year, numOfPages, numOfCopies, code, publisher, ISBN);
         setAuthors(authors);
@@ -43,7 +48,10 @@ public class Book extends Paper {
     }
 
     @Override
-    public void add() {
+    public void add(Object obj) {
+        if (!(obj instanceof ArrayList<Author>))
+            throw new IllegalArgumentException();
+
         authors.forEach(author -> {
             author.addPublisher(getPublisher());
             author.addDocument(this);

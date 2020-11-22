@@ -33,12 +33,15 @@ public class LibraryPrint {
         str.append("Documents of the Library:").append(System.lineSeparator());
         str.append(sep).append(System.lineSeparator()).append(System.lineSeparator());
 
-        if (library.getDocuments().isEmpty())
-            return str.append("No Documents Found!").append(System.lineSeparator()).toString();
+        if (library.getDocuments().isEmpty()) {
+            str.append("No Documents Found!").append(System.lineSeparator()).append(System.lineSeparator());
+            str.append(sep).append(System.lineSeparator());
+            return str.toString();
+        }
 
         library.getDocuments().forEach(doc -> {
             str.append(doc);
-            str.append(System.lineSeparator()).append(sep).append(System.lineSeparator());
+            str.append(System.lineSeparator()).append(sep).append(System.lineSeparator()).append(System.lineSeparator());
         });
 
         return str.toString();
@@ -79,12 +82,15 @@ public class LibraryPrint {
         str.append("Authors of the Library:").append(System.lineSeparator());
         str.append(sep).append(System.lineSeparator()).append(System.lineSeparator());
 
-        if (library.getAuthors().isEmpty())
-            return str.append("No Authors Found!").append(System.lineSeparator()).toString();
+        if (library.getAuthors().isEmpty()) {
+            str.append("No Authors Found!").append(System.lineSeparator()).append(System.lineSeparator());
+            str.append(sep).append(System.lineSeparator());
+            return str.toString();
+        }
 
         library.getAuthors().forEach(auth -> {
             str.append(auth);
-            str.append(System.lineSeparator()).append(sep).append(System.lineSeparator());
+            str.append(System.lineSeparator()).append(sep).append(System.lineSeparator()).append(System.lineSeparator());
         });
 
         return str.toString();

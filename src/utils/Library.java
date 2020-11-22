@@ -88,6 +88,15 @@ public class Library implements Serializable {
         documents.add(document);
     }
 
+    public void addDocument(Document document, Author author) throws IllegalArgumentException {
+        if (documents.contains(document) || authors.contains(author))
+            throw new IllegalArgumentException();
+
+        document.add();
+        documents.add(document);
+        authors.add(author);
+    }
+
     public void addDocument(Document document, ArrayList<Author> authors) throws IllegalArgumentException {
         if (documents.contains(document) || this.authors.stream().anyMatch(authors::contains))
             throw new IllegalArgumentException();
@@ -147,7 +156,7 @@ public class Library implements Serializable {
         ArrayList<Integer> indexes = new ArrayList<>();
 
         for (int i = 0; i < documents.size(); i++) {
-            if (t.matches(documents.get(i).getTitle()))
+            if (t.contains(documents.get(i).getTitle()))
                 indexes.add(i);
         }
 

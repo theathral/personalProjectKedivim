@@ -39,7 +39,7 @@ public class Journal extends Paper {
 
     @Override
     public String toString() {
-        return "Journal: "
+        return "Journal: " + super.toString()
                 + "Volume: " + volume + System.lineSeparator()
                 + "Issue: " + issue + System.lineSeparator();
     }
