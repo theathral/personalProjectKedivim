@@ -11,8 +11,8 @@ public abstract class Thesis extends Document {
     private String department;
     private String university;
 
-    public Thesis(String title, int year, int numOfPages, int numOfCopies, String code, Author author, String supervisor, String department, String university) {
-        super(title, year, numOfPages, numOfCopies, code);
+    public Thesis(String code, String title, int year, int numOfPages, int numOfCopies, Author author, String supervisor, String department, String university) {
+        super(code, title, year, numOfPages, numOfCopies);
         setAuthor(author);
         setSupervisor(supervisor);
         setDepartment(department);

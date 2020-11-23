@@ -115,15 +115,8 @@ public class UIMsg {
     }
 
     static String typesListMsg(ArrayList<String> types) {
-        StringBuilder str = new StringBuilder();
-
-        str.append("What kind of document do you want to add? (Enter a number)").append(System.lineSeparator());
-        for (int i = 0; i < types.size(); i++) {
-            str.append(i + 1).append(" -> ").append(types.get(i)).append(System.lineSeparator());
-        }
-        str.append("0 -> Cancel").append(System.lineSeparator());
-
-        return str.toString();
+        return "What kind of document do you want to add? (Enter a number)" + System.lineSeparator()
+                + objListMsg(types);
     }
 
     static String addMoreAuthors() {
@@ -133,8 +126,25 @@ public class UIMsg {
                 + "0 -> Cancel" + System.lineSeparator();
     }
 
+
+    static String attributesListMsg(ArrayList<String> attributes) {
+        return "Which attribute do you want to modify? (Enter a number)" + System.lineSeparator()
+                + objListMsg(attributes);
+    }
+
+    static String objListMsg(ArrayList<String> list) {
+        StringBuilder str = new StringBuilder();
+
+        for (int i = 0; i < list.size(); i++) {
+            str.append(i + 1).append(" -> ").append(list.get(i)).append(System.lineSeparator());
+        }
+        str.append("0 -> Cancel").append(System.lineSeparator());
+
+        return str.toString();
+    }
+
     static String objectCannotActionMsg(String type, String action, String reason) {
-        return "This " + type + " cannot be " + action + " because " + "." + reason + System.lineSeparator()
+        return "This " + type + " cannot be " + action + " because " + reason + "." + System.lineSeparator()
                 + "Do you want to try another one? (Enter a number)" + System.lineSeparator()
                 + "1 -> Try something else" + System.lineSeparator()
                 + "0 -> Cancel" + System.lineSeparator();

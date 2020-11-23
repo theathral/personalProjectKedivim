@@ -7,8 +7,8 @@ public class Journal extends Paper {
     private int volume;
     private int issue;
 
-    public Journal(String title, int year, int numOfPages, int numOfCopies, String code, String publisher, String ISBN, int volume, int issue) {
-        super(title, year, numOfPages, numOfCopies, code, publisher, ISBN);
+    public Journal(String code, String title, int year, int numOfPages, int numOfCopies, String publisher, String ISBN, int volume, int issue) {
+        super(code, title, year, numOfPages, numOfCopies, publisher, ISBN);
         setVolume(volume);
         setIssue(issue);
     }

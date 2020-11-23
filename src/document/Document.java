@@ -6,13 +6,13 @@ import java.io.Serializable;
 
 public abstract class Document implements Serializable {
 
+    private String code;
     private String title;
     private int year;
     private int numOfPages;
     private int numOfCopies;
-    private String code;
 
-    public Document(String title, int year, int numOfPages, int numOfCopies, String code) {
+    public Document(String code, String title, int year, int numOfPages, int numOfCopies) {
         setTitle(title);
         setYear(year);
         setNumOfPages(numOfPages);

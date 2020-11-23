@@ -4,8 +4,8 @@ import author.Author;
 
 public class BachelorThesis extends Thesis {
 
-    public BachelorThesis(String title, int year, int numOfPages, int numOfCopies, String code, Author author, String supervisor, String department, String university) {
-        super(title, year, numOfPages, numOfCopies, code, author, supervisor, department, university);
+    public BachelorThesis(String code, String title, int year, int numOfPages, int numOfCopies, Author author, String supervisor, String department, String university) {
+        super(code, title, year, numOfPages, numOfCopies, author, supervisor, department, university);
     }
 
     @Override

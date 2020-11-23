@@ -10,15 +10,9 @@ public class Book extends Paper {
     private ArrayList<Author> authors;
 
 
-    public Book(String title, int year, int numOfPages, int numOfCopies, String code, String publisher, String ISBN, ArrayList<Author> authors) {
-        super(title, year, numOfPages, numOfCopies, code, publisher, ISBN);
+    public Book(String code, String title, int year, int numOfPages, int numOfCopies, String publisher, String ISBN, ArrayList<Author> authors) {
+        super(code, title, year, numOfPages, numOfCopies, publisher, ISBN);
         setAuthors(authors);
-    }
-
-    public Book(String title, int year, int numOfPages, int numOfCopies, String code, String publisher, String ISBN, Author author) {
-        super(title, year, numOfPages, numOfCopies, code, publisher, ISBN);
-        authors = new ArrayList<>();
-        addAuthor(author);
     }
 
     public ArrayList<Author> getAuthors() {

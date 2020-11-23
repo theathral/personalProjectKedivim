@@ -7,8 +7,8 @@ public abstract class Paper extends Document {
     private String publisher;
     private String ISBN;
 
-    public Paper(String title, int year, int numOfPages, int numOfCopies, String code, String publisher, String ISBN) {
-        super(title, year, numOfPages, numOfCopies, code);
+    public Paper(String code, String title, int year, int numOfPages, int numOfCopies, String publisher, String ISBN) {
+        super(code, title, year, numOfPages, numOfCopies);
         setPublisher(publisher);
         setISBN(ISBN);
     }
