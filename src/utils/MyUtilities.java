@@ -6,7 +6,7 @@ import java.util.*;
 
 public class MyUtilities {
 
-    public static String checkString(String str) {
+    public static String checkString(String str) throws IllegalArgumentException {
         String s = str.trim().toUpperCase();
         if (s.equals(""))
             throw new IllegalArgumentException();

@@ -24,14 +24,6 @@ public class Author implements Serializable {
         publishers = new HashMap<>();
     }
 
-    public Author(String name, ZonedDateTime dateOfBirth, ArrayList<Document> documents, String description) {
-        setName(name);
-        setDateOfBirth(dateOfBirth);
-        setDocuments(documents);
-        setDescription(description);
-        publishers = new HashMap<>();
-    }
-
     public String getName() {
         return name;
     }
@@ -42,10 +34,6 @@ public class Author implements Serializable {
 
     public ZonedDateTime getDateOfBirth() {
         return dateOfBirth;
-    }
-
-    public void setDateOfBirth(String dateOfBirth) throws IllegalArgumentException {
-        this.dateOfBirth = MyUtilities.checkDate(dateOfBirth);
     }
 
     public void setDateOfBirth(ZonedDateTime dateOfBirth) throws IllegalArgumentException {
@@ -61,9 +49,6 @@ public class Author implements Serializable {
     }
 
     public void addDocument(Document document) throws IndexOutOfBoundsException {
-        System.out.println("////////////" + document.getCode());
-        System.out.println("////////////" + ((Thesis) document).getAuthor());
-
         if (documents.contains(document))
             throw new IndexOutOfBoundsException();
 
@@ -128,11 +113,11 @@ public class Author implements Serializable {
                 .append(")").append(System.lineSeparator());
         str.append("Description: ").append(description).append(System.lineSeparator());
 
-        str.append("Documents: ");
+        str.append("Documents (").append(documents.size()).append("): ");
         documents.forEach(doc -> str.append(doc.getCode()).append(", "));
         str.append(System.lineSeparator());
 
-        str.append("Publishers: ");
+        str.append("Publishers (").append(publishers.size()).append("): ");
         publishers.keySet().forEach(pub -> str.append(pub).append(", "));
         str.append(System.lineSeparator());
 

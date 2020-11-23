@@ -84,26 +84,7 @@ public class Library implements Serializable {
         if (documents.contains(document))
             throw new IllegalArgumentException();
 
-        document.add();
         documents.add(document);
-    }
-
-    public void addDocument(Document document, Author author) throws IllegalArgumentException {
-        if (documents.contains(document) || authors.contains(author))
-            throw new IllegalArgumentException();
-
-        document.add();
-        documents.add(document);
-        authors.add(author);
-    }
-
-    public void addDocument(Document document, ArrayList<Author> authors) throws IllegalArgumentException {
-        if (documents.contains(document) || this.authors.stream().anyMatch(authors::contains))
-            throw new IllegalArgumentException();
-
-        document.add();
-        documents.add(document);
-        this.authors.addAll(authors);
     }
 
     public void addAuthor(Author author) throws IllegalArgumentException {

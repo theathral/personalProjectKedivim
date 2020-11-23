@@ -9,10 +9,6 @@ public class Book extends Paper {
     private static final int MAX_AUTHORS = 5;
     private ArrayList<Author> authors;
 
-    public Book(String title, int year, int numOfPages, int numOfCopies, String code, String publisher, String ISBN) {
-        super(title, year, numOfPages, numOfCopies, code, publisher, ISBN);
-        authors = new ArrayList<>();
-    }
 
     public Book(String title, int year, int numOfPages, int numOfCopies, String code, String publisher, String ISBN, ArrayList<Author> authors) {
         super(title, year, numOfPages, numOfCopies, code, publisher, ISBN);
@@ -43,15 +39,14 @@ public class Book extends Paper {
         authors.add(author);
     }
 
-    public Author removeAuthor(int index) throws IndexOutOfBoundsException {
-        return authors.remove(index);
+    public void removeAuthor(int index) throws IndexOutOfBoundsException {
+        authors.get(index).deceaseOrRemovePublisher(getPublisher());
+        authors.get(index).removeDocument(this);
+        authors.remove(index);
     }
 
     @Override
-    public void add(Object obj) {
-        if (!(obj instanceof ArrayList<Author>))
-            throw new IllegalArgumentException();
-
+    public void add() {
         authors.forEach(author -> {
             author.addPublisher(getPublisher());
             author.addDocument(this);
@@ -60,10 +55,9 @@ public class Book extends Paper {
 
     @Override
     public void remove() {
-        authors.forEach(author -> {
-            author.deceaseOrRemovePublisher(getPublisher());
-            author.removeDocument(this);
-        });
+        for (int i = 0; i < authors.size(); i++) {
+            removeAuthor(i);
+        }
     }
 
     @Override

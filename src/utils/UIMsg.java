@@ -133,6 +133,13 @@ public class UIMsg {
                 + "0 -> Cancel" + System.lineSeparator();
     }
 
+    static String objectCannotActionMsg(String type, String action, String reason) {
+        return "This " + type + " cannot be " + action + " because " + "." + reason + System.lineSeparator()
+                + "Do you want to try another one? (Enter a number)" + System.lineSeparator()
+                + "1 -> Try something else" + System.lineSeparator()
+                + "0 -> Cancel" + System.lineSeparator();
+    }
+
     static String objectFoundMsg(String type) {
         return "This " + type + " already exists. Do you want to try another one? (Enter a number)" + System.lineSeparator()
                 + "1 -> Try something else" + System.lineSeparator()

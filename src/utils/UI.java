@@ -7,7 +7,6 @@ import document.Journal;
 import document.thesis.BachelorThesis;
 import document.thesis.DoctoralThesis;
 import document.thesis.MasterThesis;
-import document.thesis.Thesis;
 
 import java.io.File;
 import java.io.IOException;
@@ -101,9 +100,14 @@ public class UI {
         } while (true);
     }
 
-    private static String inputLine(String msg) {
-        System.out.print(msg);
-        return MyUtilities.checkString(scanner.nextLine());
+    private static String inputLine(String msg) throws IllegalArgumentException {
+        do {
+            try {
+                System.out.print(msg);
+                return MyUtilities.checkString(scanner.nextLine());
+            } catch (IllegalArgumentException ignored) {
+            }
+        } while (true);
     }
 
     private static ZonedDateTime inputDate(String msg) {
@@ -237,7 +241,7 @@ public class UI {
         Document newDoc = null;
         String code, title, publisher, isbn, supervisor, department, university;
         int year, numOfPages, numOfCopies, volume, issue;
-        Author author = null;
+        Author author;
         ArrayList<Author> authorList = new ArrayList<>();
 
         int choice = inputChoiceRange(UIMsg.typesListMsg(typeKeys), 0, typeKeys.size());
@@ -320,43 +324,25 @@ public class UI {
                 newDoc = new Journal(title, year, numOfPages, numOfCopies, code, publisher, isbn, volume, issue);
             }
             case "Bachelor Thesis", "Master Thesis", "Doctoral Thesis" -> {
+                do {
+                    try {
+                        author = library.getAuthor(inputLine(UIMsg.inputMsg("Name", "Author")));
+                        break;
+
+                    } catch (IndexOutOfBoundsException e) {
+                        if (!inputChoiceBoolean(UIMsg.objectNotFoundMsg("Author")))
+                            return;
+                    }
+                } while (true);
+
                 supervisor = inputLine(UIMsg.inputMsg("Supervisor", choiceStr));
                 department = inputLine(UIMsg.inputMsg("Department", choiceStr));
                 university = inputLine(UIMsg.inputMsg("University", choiceStr));
 
-                do {
-                    try {
-                        String name = inputLine(UIMsg.inputMsg("Name", "Author"));
-
-                        int index = library.findAuthor(name);
-                        if (index != -1) {
-                            author = library.getAuthor(index);
-                            break;
-                        }
-
-                        int newAuthorChoice = inputChoiceRange(UIMsg.objectNotFoundAndAddMsg("Author"), 0, 2);
-                        if (newAuthorChoice == 0)
-                            return;
-                        else if (newAuthorChoice == 1)
-                            break;
-                        else if (newAuthorChoice == 2) {
-                            int authorSize = library.getAuthors().size();
-                            addAuthor();
-                            if (library.getAuthors().size() == authorSize + 1) {
-                                author = library.getAuthor(library.getAuthors().size() - 1);
-                                break;
-                            } else
-                                System.out.println(UIMsg.wrongCreationMsg("Author"));
-                        } else
-                            throw new RuntimeException();
-                    } catch (IllegalArgumentException ignored) {
-                    }
-                } while (true);
-
                 newDoc = switch (choiceStr) {
-                    case "Bachelor Thesis" -> (new BachelorThesis(title, year, numOfPages, numOfCopies, code, supervisor, department, university));
-                    case "Master Thesis" -> (new MasterThesis(title, year, numOfPages, numOfCopies, code, supervisor, department, university));
-                    case "Doctoral Thesis" -> (new DoctoralThesis(title, year, numOfPages, numOfCopies, code, supervisor, department, university));
+                    case "Bachelor Thesis" -> new BachelorThesis(title, year, numOfPages, numOfCopies, code, author, supervisor, department, university);
+                    case "Master Thesis" -> new MasterThesis(title, year, numOfPages, numOfCopies, code, author, supervisor, department, university);
+                    case "Doctoral Thesis" -> new DoctoralThesis(title, year, numOfPages, numOfCopies, code, author, supervisor, department, university);
                     default -> newDoc;
                 };
             }
@@ -364,7 +350,7 @@ public class UI {
         }
 
         if (inputChoiceBoolean(UIMsg.newObjectCreatedMsg(newDoc, "Document"))) {
-            library.addDocument(newDoc, author);
+            library.addDocument(newDoc);
         }
     }
 
@@ -378,6 +364,9 @@ public class UI {
             try {
                 delDoc = library.getDocument(inputLine(UIMsg.findMsg("Code", "Document", "delete")));
                 break;
+            } catch (IndexOutOfBoundsException e) {
+                if (!inputChoiceBoolean(UIMsg.objectNotFoundMsg("Document")))
+                    return;
             } catch (IllegalArgumentException ignored) {
             }
         } while (true);
@@ -467,6 +456,12 @@ public class UI {
         do {
             try {
                 delAuthor = library.getAuthor(inputLine(UIMsg.findMsg("Name", "Author", "delete")));
+                if (!delAuthor.getDocuments().isEmpty()) {
+                    if (!inputChoiceBoolean(UIMsg.objectCannotActionMsg("Author", "deleted", "exists in documents")))
+                        return;
+                    continue;
+                }
+
                 break;
             } catch (IndexOutOfBoundsException e) {
                 if (!inputChoiceBoolean(UIMsg.objectNotFoundMsg("Author")))
