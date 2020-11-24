@@ -126,7 +126,7 @@ public class Library implements Serializable {
         ArrayList<Integer> indexes = new ArrayList<>();
 
         for (int i = 0; i < documents.size(); i++) {
-            if (t.contains(documents.get(i).getTitle()))
+            if (documents.get(i).getTitle().contains(t))
                 indexes.add(i);
         }
 
