@@ -249,6 +249,7 @@ public class UI {
 
     private static void addDocument() {
         ArrayList<String> typeKeys = new ArrayList<>(library.getTypeOfDocuments().keySet());
+        typeKeys.add("Cancel");
         DocInterface newDoc;
 
         int choice = inputChoiceRange(UIMsg.typesListMsg(typeKeys), 0, typeKeys.size());
@@ -493,8 +494,8 @@ public class UI {
     }
 
     private static void deleteAllDocuments() {
-//        if (inputChoiceBoolean(UIMsg.objectDeletionMsg("ALL DOCUMENTS" + System.lineSeparator(), "Document")))
-//            library.getDocuments().forEach(doc -> library.deleteDocument(doc.getCode()));
+        if (inputChoiceBoolean(UIMsg.objectDeletionMsg("ALL DOCUMENTS" + System.lineSeparator(), "Document")))
+            library.deleteAllDocuments();
     }
 
 

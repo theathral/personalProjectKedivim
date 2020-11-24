@@ -88,6 +88,12 @@ public class Library implements Serializable {
         documents.remove(findDocumentByCode(code));
     }
 
+    public void deleteAllDocuments() throws IndexOutOfBoundsException {
+        for (int i = documents.size() - 1; i >= 0; i--) {
+            deleteDocument(documents.get(i).getCode());
+        }
+    }
+
     public void deleteAuthor(String name) throws IndexOutOfBoundsException {
         authors.remove(findAuthor(name));
     }
