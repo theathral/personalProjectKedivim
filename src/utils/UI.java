@@ -15,13 +15,15 @@ import java.util.*;
 
 public class UI {
 
-    private static final String PATH = "libDB.bin";
+    private static final String BIN_PATH = "libDB.bin";
+    private static final String SEARCH_PATH = "search_";
+    private static final String TXT = ".txt";
 
     private static Library library = new Library();
     private static final Scanner scanner = new Scanner(System.in);
 
     public static void main(String[] args) {
-//        dummyData();
+        dummyData();
 
         System.out.println(UIMsg.welcomeMsg());
         pressEnter();
@@ -39,10 +41,7 @@ public class UI {
                 case "Save to Database" -> saveToDB();
                 case "Documents" -> documents();
                 case "Authors" -> authors();
-                case "Statistics" -> {
-                    System.out.println(new LibraryPrint(library).printStats());
-                    pressEnter();
-                }
+                case "Statistics" -> printSearchAndSaveToDB(library.printStatsStr());
                 default -> throw new RuntimeException();
             }
         } while (true);
@@ -111,7 +110,7 @@ public class UI {
     }
 
     private static void saveToDBBeforeExit() {
-        if (inputChoiceBoolean(UIMsg.saveToDBBeforeExitMsg()))
+        if (inputChoiceBoolean(UIMsg.saveToDBMsg("database")))
             saveToDB();
     }
 
@@ -125,7 +124,7 @@ public class UI {
                     return;
 
                 switch (choiceList.get(choice - 1)) {
-                    case "Default file" -> library = library.loadFile(PATH);
+                    case "Default file" -> library = library.loadFile(BIN_PATH);
                     case "Custom file" -> library = library.loadFile(inputLine(UIMsg.actionMsg("path", "File", "load")));
                     default -> throw new RuntimeException();
                 }
@@ -145,17 +144,31 @@ public class UI {
     private static void saveToDB() {
         do {
             try {
-                if (new File(PATH).isFile()) {
+                if (new File(BIN_PATH).isFile()) {
                     if (!inputChoiceBoolean(UIMsg.overrideDBMsg()))
                         return;
                     break;
                 }
-                library.writeToBinaryFile(PATH);
+                library.writeToBinaryFile(BIN_PATH);
                 return;
             } catch (IOException e) {
                 System.out.println(UIMsg.wrongMsg());
             }
         } while (true);
+    }
+
+    private static void printSearchAndSaveToDB(String searchResult) {
+        String filePath = SEARCH_PATH + System.currentTimeMillis() + TXT;
+
+        System.out.println(searchResult);
+        pressEnter();
+
+        if (inputChoiceBoolean(UIMsg.saveToDBMsg("search")))
+            try {
+                library.saveToFile(searchResult, filePath);
+            } catch (IOException e) {
+                System.out.println(UIMsg.wrongMsg());
+            }
     }
 
 
@@ -168,10 +181,7 @@ public class UI {
                 return;
 
             switch (choiceList.get(choice - 1)) {
-                case "Print All" -> {
-                    System.out.println(new LibraryPrint(library).printDocuments());
-                    pressEnter();
-                }
+                case "Print All" -> printSearchAndSaveToDB(library.printDocumentsStr());
                 case "Search Document" -> searchAndPrintDocument();
                 case "Add Document" -> addDocument();
                 case "Modify Document" -> modifyDocument();
@@ -193,17 +203,15 @@ public class UI {
                     return;
 
                 switch (choiceList.get(choice - 1)) {
-                    case "Code" -> System.out.println(new LibraryPrint(library).printDocumentWithCode(inputLine(UIMsg.actionMsg("Code", "Document", "search"))));
-                    case "Title" -> System.out.println(new LibraryPrint(library).printDocumentWithTitle(inputLine(UIMsg.actionMsg("Title (or part of it)", "Document", "search"))));
+                    case "Code" -> printSearchAndSaveToDB(library.printDocumentWithCodeStr(inputLine(UIMsg.actionMsg("Code", "Document", "search"))));
+                    case "Title" -> printSearchAndSaveToDB(library.printDocumentWithTitleStr(inputLine(UIMsg.actionMsg("Title (or part of it)", "Document", "search"))));
                     default -> throw new RuntimeException();
                 }
-                pressEnter();
                 return;
             } catch (IndexOutOfBoundsException e) {
                 int choice = inputChoiceRange(UIMsg.objectNotFoundAndAddMsg("Document", choiceExcList), 0, choiceExcList.size() - 1);
                 if (choice == 0) // Cancel
                     return;
-
 
                 switch (choiceExcList.get(choice - 1)) {
                     case "Try something else" -> {
@@ -508,10 +516,7 @@ public class UI {
                 return;
 
             switch (choiceList.get(choice - 1)) {
-                case "Print All" -> {
-                    System.out.println(new LibraryPrint(library).printAuthors());
-                    pressEnter();
-                }
+                case "Print All" -> printSearchAndSaveToDB(library.printAuthorsStr());
                 case "Search Author" -> searchAndPrintAuthor();
                 case "Add Author" -> addAuthor();
                 case "Modify Author" -> modifyAuthor();
@@ -526,8 +531,7 @@ public class UI {
 
         do {
             try {
-                System.out.println(new LibraryPrint(library).printAuthor(inputLine(UIMsg.actionMsg("Name", "Author", "search"))));
-                pressEnter();
+                printSearchAndSaveToDB(library.printAuthorStr(inputLine(UIMsg.actionMsg("Name", "Author", "search"))));
                 return;
             } catch (IndexOutOfBoundsException e) {
                 int choice = inputChoiceRange(UIMsg.objectNotFoundAndAddMsg("Author", choiceList), 0, choiceList.size() - 1);
@@ -634,23 +638,23 @@ public class UI {
     }
 
     private static void dummyData() {
-        library.addAuthor(new Author("theodosis", new GregorianCalendar(1998, Calendar.MAY, 15).toZonedDateTime(), "One of the best"));
-        library.addAuthor(new Author("niki", new GregorianCalendar(1972, Calendar.JANUARY, 22).toZonedDateTime(), "One of the best"));
-        library.addAuthor(new Author("rallis", new GregorianCalendar(1964, Calendar.FEBRUARY, 27).toZonedDateTime(), "One of the best"));
-        library.addAuthor(new Author("panos", new GregorianCalendar(1998, Calendar.SEPTEMBER, 17).toZonedDateTime(), "One of the best"));
-        library.addAuthor(new Author("nikos", new GregorianCalendar(1998, Calendar.APRIL, 6).toZonedDateTime(), "One of the best"));
-        library.addAuthor(new Author("george", new GregorianCalendar(1998, Calendar.APRIL, 27).toZonedDateTime(), "One of the best"));
+        library.addAuthor(new Author("Theodosius", new GregorianCalendar(1998, Calendar.MAY, 15).toZonedDateTime(), "One of the best"));
+        library.addAuthor(new Author("Niki", new GregorianCalendar(1972, Calendar.JANUARY, 22).toZonedDateTime(), "One of the best"));
+        library.addAuthor(new Author("Rallies", new GregorianCalendar(1964, Calendar.FEBRUARY, 27).toZonedDateTime(), "One of the best"));
+        library.addAuthor(new Author("Panos", new GregorianCalendar(1998, Calendar.SEPTEMBER, 17).toZonedDateTime(), "One of the best"));
+        library.addAuthor(new Author("Nikos", new GregorianCalendar(1998, Calendar.APRIL, 6).toZonedDateTime(), "One of the best"));
+        library.addAuthor(new Author("George", new GregorianCalendar(1998, Calendar.APRIL, 27).toZonedDateTime(), "One of the best"));
 
-        library.addDocument(new Book("1001", "Book", 2000, 100, 100,
-                "someone", "0001", new ArrayList<>(Arrays.asList(library.getAuthor("panos"), library.getAuthor("nikos")))));
-        library.addDocument(new Journal("1002", "Journal", 2000, 100, 100,
-                "someone", "0001", 1, 1));
-        library.addDocument(new BachelorThesis("1003", "Bachelor", 2000, 100, 100,
-                library.getAuthor("theodosis"), "somebody", "csd", "auth"));
-        library.addDocument(new MasterThesis("1004", "Master", 2000, 100, 100,
-                library.getAuthor("niki"), "somebody", "csd", "auth"));
-        library.addDocument(new DoctoralThesis("1005", "Doctoral", 2000, 100, 100,
-                library.getAuthor("rallis"), "somebody", "csd", "auth"));
+        library.addDocument(new Book("1001", "aBook", 1998, 100, 100,
+                "Someone", "0001", new ArrayList<>(Arrays.asList(library.getAuthor("Panos"), library.getAuthor("Nikos")))));
+        library.addDocument(new Journal("1002", "aJournal", 2000, 100, 100,
+                "Someone", "0001", 1, 1));
+        library.addDocument(new BachelorThesis("1003", "aBachelor", 1998, 100, 100,
+                library.getAuthor("Theodosius"), "somebody", "Theodosius", "AUTH"));
+        library.addDocument(new MasterThesis("1004", "aMaster", 1972, 100, 100,
+                library.getAuthor("Niki"), "Somebody", "Theodosius", "AUTH"));
+        library.addDocument(new DoctoralThesis("1005", "aDoctoral", 1964, 100, 100,
+                library.getAuthor("Rallies"), "Somebody", "CSD", "AUTH"));
 
     }
 

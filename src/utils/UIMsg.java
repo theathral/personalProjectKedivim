@@ -98,8 +98,8 @@ public class UIMsg {
                 + "0 -> Cancel" + line();
     }
 
-    static String saveToDBBeforeExitMsg() {
-        return "Do want to save the database to file? (Enter a number)" + line()
+    static String saveToDBMsg(String type) {
+        return "Do want to save the " + type + " to a file? (Enter a number)" + line()
                 + "1 -> Save" + line()
                 + "0 -> No, don't Save" + line();
     }

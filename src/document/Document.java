@@ -26,7 +26,12 @@ public abstract class Document implements DocInterface, Serializable {
     }
 
     public void setTitle(String title) {
-        this.title = title;
+        this.title = MyUtilities.checkString(title);
+    }
+
+    @Override
+    public int getYear() {
+        return year;
     }
 
     public void setYear(int year) throws IllegalArgumentException {

@@ -6,6 +6,8 @@ public interface DocInterface {
 
     String getTitle();
 
+    int getYear();
+
     void add() throws IndexOutOfBoundsException;
 
     void remove() throws IndexOutOfBoundsException;

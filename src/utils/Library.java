@@ -10,9 +10,12 @@ import document.thesis.MasterThesis;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.TreeMap;
 
 public class Library implements Serializable {
+
+    private static final String sep = "||--------------------||";
 
     private TreeMap<String, Class<?>> typeOfDocuments;
     private final ArrayList<DocInterface> documents;
@@ -51,7 +54,7 @@ public class Library implements Serializable {
         return documents.get(findDocumentByCode(code));
     }
 
-    public ArrayList<DocInterface> getDocumentWithTitle(String title) {
+    public ArrayList<DocInterface> getDocumentWithTitle(String title) throws IllegalArgumentException {
         ArrayList<DocInterface> docs = new ArrayList<>();
 
         findDocumentByTitle(title).forEach(idx -> docs.add(getDocument(idx)));
@@ -99,7 +102,14 @@ public class Library implements Serializable {
     }
 
 
-    public int countDocumentsClass(Class<?> myClass) {
+    private static ArrayList<DocInterface> copySortDocumentsByYear(ArrayList<DocInterface> oldList) {
+        ArrayList<DocInterface> sortedList = new ArrayList<>(oldList);
+        sortedList.sort(Comparator.comparing(DocInterface::getYear));
+
+        return sortedList;
+    }
+
+    private int countDocumentsClass(Class<?> myClass) {
         int counter = 0;
 
         for (DocInterface doc : documents) {
@@ -109,6 +119,7 @@ public class Library implements Serializable {
 
         return counter;
     }
+
 
     public int findDocumentByCode(String code) throws IllegalArgumentException {
         String c = MyUtilities.checkString(code);
@@ -145,8 +156,10 @@ public class Library implements Serializable {
     }
 
 
-    public void saveToFile(String path) {
-
+    public void saveToFile(String result, String filePath) throws IOException {
+        FileWriter writer = new FileWriter(new File(filePath));
+        writer.write(result);
+        writer.close();
     }
 
     public void writeToBinaryFile(String path) throws IOException {
@@ -158,5 +171,87 @@ public class Library implements Serializable {
             throw new IllegalArgumentException();
 
         return (Library) new ObjectInputStream(new FileInputStream(new File(path))).readObject();
+    }
+
+
+    public String printStatsStr() {
+        StringBuilder str = new StringBuilder();
+
+        str.append("Stats of the Library:").append(System.lineSeparator());
+        str.append("Total number of Documents: ").append(documents.size()).append(System.lineSeparator());
+
+        typeOfDocuments.forEach((key, value) ->
+                str.append("\t").append(key).append(": ").append(countDocumentsClass(value)).append(System.lineSeparator()));
+
+        return str.toString();
+    }
+
+    public String printDocumentsStr() {
+        StringBuilder str = new StringBuilder();
+
+        str.append("Documents of the Library:").append(System.lineSeparator());
+        str.append(sep).append(System.lineSeparator()).append(System.lineSeparator());
+
+        if (documents.isEmpty()) {
+            str.append("No Documents Found!").append(System.lineSeparator()).append(System.lineSeparator());
+            str.append(sep).append(System.lineSeparator());
+            return str.toString();
+        }
+
+        copySortDocumentsByYear(documents).forEach(doc -> {
+            str.append(doc);
+            str.append(System.lineSeparator()).append(sep).append(System.lineSeparator()).append(System.lineSeparator());
+        });
+
+        return str.toString();
+    }
+
+    public String printDocumentWithCodeStr(String code) {
+        return sep + System.lineSeparator() + System.lineSeparator()
+                + getDocument(code)
+                + System.lineSeparator() + sep + System.lineSeparator() + System.lineSeparator();
+    }
+
+    public String printDocumentWithTitleStr(String title) throws IndexOutOfBoundsException {
+        StringBuilder str = new StringBuilder();
+
+        str.append("Documents of the Library with the title: ").append(title).append(System.lineSeparator());
+        str.append(sep).append(System.lineSeparator()).append(System.lineSeparator());
+
+        if (getDocumentWithTitle(title).isEmpty())
+            throw new IndexOutOfBoundsException();
+
+        copySortDocumentsByYear(getDocumentWithTitle(title)).forEach(doc -> {
+            str.append(doc);
+            str.append(System.lineSeparator()).append(sep).append(System.lineSeparator()).append(System.lineSeparator());
+        });
+
+        return str.toString();
+    }
+
+    public String printAuthorsStr() {
+        StringBuilder str = new StringBuilder();
+
+        str.append("Authors of the Library:").append(System.lineSeparator());
+        str.append(sep).append(System.lineSeparator()).append(System.lineSeparator());
+
+        if (authors.isEmpty()) {
+            str.append("No Authors Found!").append(System.lineSeparator()).append(System.lineSeparator());
+            str.append(sep).append(System.lineSeparator());
+            return str.toString();
+        }
+
+        authors.forEach(auth -> {
+            str.append(auth);
+            str.append(System.lineSeparator()).append(sep).append(System.lineSeparator()).append(System.lineSeparator());
+        });
+
+        return str.toString();
+    }
+
+    public String printAuthorStr(String name) {
+        return sep + System.lineSeparator() + System.lineSeparator()
+                + getAuthor(name)
+                + System.lineSeparator() + sep + System.lineSeparator() + System.lineSeparator();
     }
 }
