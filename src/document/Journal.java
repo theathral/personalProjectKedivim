@@ -13,16 +13,8 @@ public class Journal extends Paper {
         setIssue(issue);
     }
 
-    public int getVolume() {
-        return volume;
-    }
-
     public void setVolume(int volume) throws IllegalArgumentException {
         this.volume = MyUtilities.checkMin(volume, 1);
-    }
-
-    public int getIssue() {
-        return issue;
     }
 
     public void setIssue(int issue) throws IllegalArgumentException {
@@ -30,11 +22,11 @@ public class Journal extends Paper {
     }
 
     @Override
-    public void add() {
+    public void add() throws IndexOutOfBoundsException {
     }
 
     @Override
-    public void remove() {
+    public void remove() throws IndexOutOfBoundsException {
     }
 
     @Override

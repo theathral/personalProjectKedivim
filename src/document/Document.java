@@ -4,7 +4,7 @@ import utils.MyUtilities;
 
 import java.io.Serializable;
 
-public abstract class Document implements Serializable {
+public abstract class Document implements DocInterface, Serializable {
 
     private String code;
     private String title;
@@ -20,6 +20,7 @@ public abstract class Document implements Serializable {
         setCode(code);
     }
 
+    @Override
     public String getTitle() {
         return title;
     }
@@ -28,30 +29,19 @@ public abstract class Document implements Serializable {
         this.title = title;
     }
 
-    public int getYear() {
-        return year;
-    }
-
     public void setYear(int year) throws IllegalArgumentException {
         this.year = MyUtilities.checkYear(year);
-    }
-
-    public int getNumOfPages() {
-        return numOfPages;
     }
 
     public void setNumOfPages(int numOfPages) throws IllegalArgumentException {
         this.numOfPages = MyUtilities.checkMin(numOfPages, 1);
     }
 
-    public int getNumOfCopies() {
-        return numOfCopies;
-    }
-
     public void setNumOfCopies(int numOfCopies) throws IllegalArgumentException {
         this.numOfCopies = MyUtilities.checkMin(numOfCopies, 0);
     }
 
+    @Override
     public String getCode() {
         return code;
     }
@@ -60,10 +50,6 @@ public abstract class Document implements Serializable {
         this.code = MyUtilities.checkString(code);
     }
 
-    public abstract void add() throws IllegalArgumentException;
-
-    public abstract void remove();
-
     @Override
     public int hashCode() {
         return code.hashCode();
@@ -71,10 +57,10 @@ public abstract class Document implements Serializable {
 
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof Document))
+        if (!(obj instanceof DocInterface))
             throw new IllegalArgumentException();
 
-        return code.equals(((Document) obj).code.trim().toUpperCase());
+        return code.equals(((DocInterface) obj).getCode().trim().toUpperCase());
     }
 
     @Override

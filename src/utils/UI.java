@@ -1,10 +1,7 @@
 package utils;
 
 import author.Author;
-import document.Book;
-import document.Document;
-import document.Journal;
-import document.Paper;
+import document.*;
 import document.thesis.BachelorThesis;
 import document.thesis.DoctoralThesis;
 import document.thesis.MasterThesis;
@@ -14,10 +11,7 @@ import java.io.File;
 import java.io.IOException;
 import java.time.Year;
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.GregorianCalendar;
-import java.util.Scanner;
+import java.util.*;
 
 public class UI {
 
@@ -27,38 +21,31 @@ public class UI {
     private static final Scanner scanner = new Scanner(System.in);
 
     public static void main(String[] args) {
-        dummyData();
+//        dummyData();
 
         System.out.println(UIMsg.welcomeMsg());
         pressEnter();
 
+        ArrayList<String> choiceList = new ArrayList<>(Arrays.asList("Load Database", "Save to Database", "Documents", "Authors", "Statistics", "EXIT PROGRAM"));
         do {
-            switch (inputChoiceRange(UIMsg.mainMenu(), 0, 5)) {
-                case 0:
-                    if (exit())
-                        return;
-                    break;
-                case 1:
-                    loadDB();
-                    break;
-                case 2:
-                    saveToDB();
-                    break;
-                case 3:
-                    documents();
-                    break;
-                case 4:
-                    authors();
-                    break;
-                case 5:
+            int choice = inputChoiceRange(UIMsg.mainMenu(choiceList), 0, choiceList.size() - 1);
+            if (choice == 0) // EXIT Program
+                if (exit())
+                    return;
+                else continue;
+
+            switch (choiceList.get(choice - 1)) {
+                case "Load Database" -> loadDB();
+                case "Save to Database" -> saveToDB();
+                case "Documents" -> documents();
+                case "Authors" -> authors();
+                case "Statistics" -> {
                     System.out.println(new LibraryPrint(library).printStats());
                     pressEnter();
-                    break;
-                default:
-                    throw new RuntimeException();
+                }
+                default -> throw new RuntimeException();
             }
         } while (true);
-
     }
 
     private static void pressEnter() {
@@ -129,20 +116,21 @@ public class UI {
     }
 
     private static void loadDB() {
+        ArrayList<String> choiceList = new ArrayList<>(Arrays.asList("Default file", "Custom file", "Cancel"));
+
         do {
             try {
-                switch (inputChoiceRange(UIMsg.loadDBMsg(), 0, 2)) {
-                    case 0:
-                        return;
-                    case 1:
-                        library = library.loadFile(PATH);
-                        return;
-                    case 2:
-                        library = library.loadFile(inputLine(UIMsg.loadCustomDBMsg()));
-                        return;
-                    default:
-                        throw new RuntimeException();
+                int choice = inputChoiceRange(UIMsg.loadDBMsg(choiceList), 0, choiceList.size() - 1);
+                if (choice == 0) // Cancel
+                    return;
+
+                switch (choiceList.get(choice - 1)) {
+                    case "Default file" -> library = library.loadFile(PATH);
+                    case "Custom file" -> library = library.loadFile(inputLine(UIMsg.actionMsg("path", "File", "load")));
+                    default -> throw new RuntimeException();
                 }
+                return;
+
             } catch (IOException | ClassNotFoundException e) {
                 System.out.println(UIMsg.wrongFileMsg());
                 pressEnter();
@@ -166,76 +154,75 @@ public class UI {
                 return;
             } catch (IOException e) {
                 System.out.println(UIMsg.wrongMsg());
-                System.out.println(e.toString());
             }
         } while (true);
     }
 
 
     private static void documents() {
+        ArrayList<String> choiceList = new ArrayList<>(Arrays.asList("Print All", "Search Document", "Add Document", "Modify Document", "Delete Document", "DELETE ALL DOCUMENTS", "Back to Main Menu"));
+
         do {
-            switch (inputChoiceRange(UIMsg.documentsMenu(), 0, 5)) {
-                case 0:
-                    return;
-                case 1:
+            int choice = inputChoiceRange(UIMsg.subMenus("Documents", choiceList), 0, choiceList.size() - 1);
+            if (choice == 0) // Back to Main Menu
+                return;
+
+            switch (choiceList.get(choice - 1)) {
+                case "Print All" -> {
                     System.out.println(new LibraryPrint(library).printDocuments());
                     pressEnter();
-                    break;
-                case 2:
-                    searchAndPrintDocument();
-                    break;
-                case 3:
-                    addDocument();
-                    break;
-                case 4:
-                    modifyDocument();
-                    break;
-                case 5:
-                    deleteDocument();
-                    break;
-                default:
-                    throw new RuntimeException();
+                }
+                case "Search Document" -> searchAndPrintDocument();
+                case "Add Document" -> addDocument();
+                case "Modify Document" -> modifyDocument();
+                case "Delete Document" -> deleteDocument();
+                case "DELETE ALL DOCUMENTS" -> deleteAllDocuments();
+                default -> throw new RuntimeException();
             }
         } while (true);
     }
 
     private static void searchAndPrintDocument() {
+        ArrayList<String> choiceList = new ArrayList<>(Arrays.asList("Code", "Title", "Cancel"));
+        ArrayList<String> choiceExcList = new ArrayList<>(Arrays.asList("Try something else", "Add Document", "Cancel"));
+
         do {
             try {
-                switch (inputChoiceRange(UIMsg.searchDocumentMsg(), 0, 2)) {
-                    case 0:
-                        return;
-                    case 1:
-                        System.out.println(new LibraryPrint(library).printDocumentWithCode(inputLine(UIMsg.searchDocByCodeMsg())));
-                        break;
-                    case 2:
-                        System.out.println(new LibraryPrint(library).printDocumentWithTitle(inputLine(UIMsg.searchDocByTitleMsg())));
-                        break;
-                    default:
-                        throw new RuntimeException();
+                int choice = inputChoiceRange(UIMsg.searchDocumentMsg(choiceList), 0, choiceList.size() - 1);
+                if (choice == 0) // Cancel
+                    return;
+
+                switch (choiceList.get(choice - 1)) {
+                    case "Code" -> System.out.println(new LibraryPrint(library).printDocumentWithCode(inputLine(UIMsg.actionMsg("Code", "Document", "search"))));
+                    case "Title" -> System.out.println(new LibraryPrint(library).printDocumentWithTitle(inputLine(UIMsg.actionMsg("Title (or part of it)", "Document", "search"))));
+                    default -> throw new RuntimeException();
                 }
                 pressEnter();
                 return;
             } catch (IndexOutOfBoundsException e) {
-                switch (inputChoiceRange(UIMsg.objectNotFoundAndAddMsg("Document"), 0, 2)) {
-                    case 0:
-                        return;
-                    case 1:
-                        break;
-                    case 2:
+                int choice = inputChoiceRange(UIMsg.objectNotFoundAndAddMsg("Document", choiceExcList), 0, choiceExcList.size() - 1);
+                if (choice == 0) // Cancel
+                    return;
+
+
+                switch (choiceExcList.get(choice - 1)) {
+                    case "Try something else" -> {
+                    }
+                    case "Add Document" -> {
                         addDocument();
                         return;
-                    default:
-                        throw new RuntimeException();
+                    }
+                    default -> throw new RuntimeException();
                 }
             }
-        } while (true);
+        }
+        while (true);
     }
 
-    private static Document searchDocument(String action) {
+    private static DocInterface searchDocument(String action) {
         do {
             try {
-                return library.getDocument(inputLine(UIMsg.findMsg("Code", "Document", action)));
+                return library.getDocument(inputLine(UIMsg.actionMsg("Code", "Document", action)));
 
             } catch (IndexOutOfBoundsException e) {
                 if (!inputChoiceBoolean(UIMsg.objectNotFoundMsg("Document")))
@@ -262,7 +249,7 @@ public class UI {
 
     private static void addDocument() {
         ArrayList<String> typeKeys = new ArrayList<>(library.getTypeOfDocuments().keySet());
-        Document newDoc;
+        DocInterface newDoc;
 
         int choice = inputChoiceRange(UIMsg.typesListMsg(typeKeys), 0, typeKeys.size());
         if (choice == 0)
@@ -325,6 +312,8 @@ public class UI {
     }
 
     private static ArrayList<Author> addBookAuthors() {
+        ArrayList<String> choiceList = new ArrayList<>(Arrays.asList("Add more", "No, continue with the other attributes", "Cancel"));
+
         ArrayList<Author> authorsList = new ArrayList<>();
         do {
             authorsList.add(searchAuthor("add"));
@@ -334,19 +323,23 @@ public class UI {
             if (authorsList.size() >= 5)
                 return authorsList;
 
-            int addMoreAuthorsChoice = inputChoiceRange(UIMsg.addMoreAuthors(), 0, 2);
-            if (addMoreAuthorsChoice == 0)
+            int choice = inputChoiceRange(UIMsg.addMoreAuthors(choiceList), 0, choiceList.size() - 1);
+            if (choice == 0) // Cancel
                 return null;
-            else if (addMoreAuthorsChoice == 2)
-                return authorsList;
-            else if (addMoreAuthorsChoice != 1)
-                throw new RuntimeException();
 
+            switch (choiceList.get(choice - 1)) {
+                case "Add more" -> {
+                }
+                case "No, continue with the other attributes" -> {
+                    return authorsList;
+                }
+                default -> throw new RuntimeException();
+            }
         } while (true);
     }
 
     private static void modifyDocument() {
-        Document modDoc = searchDocument("modify");
+        DocInterface modDoc = searchDocument("modify");
         if (modDoc == null)
             return;
 
@@ -388,11 +381,15 @@ public class UI {
     }
 
     private static void modifyAuthorDocument(Book document) {
+        ArrayList<String> choiceList = new ArrayList<>(Arrays.asList("Add New", "Delete", "Cancel"));
+
         do {
-            switch (inputChoiceRange(UIMsg.modifyAuthorsDocument(), 0, 2)) {
-                case 0:
-                    return;
-                case 1:
+            int choice = inputChoiceRange(UIMsg.modifyAuthorsDocument(choiceList), 0, choiceList.size() - 1);
+            if (choice == 0) // Cancel
+                return;
+
+            switch (choiceList.get(choice - 1)) {
+                case "Add New" -> {
                     if (document.getAuthors().size() >= 5) {
                         if (inputChoiceBoolean(UIMsg.objectCannotActionMsg("action", "proceeded", "there are already 5 authors")))
                             continue;
@@ -402,7 +399,6 @@ public class UI {
                     Author newAuthor = searchAuthor("add");
                     if (newAuthor == null)
                         return;
-
                     if (document.getAuthors().contains(newAuthor)) {
                         if (inputChoiceBoolean(UIMsg.objectFoundMsg("Author")))
                             continue;
@@ -411,7 +407,8 @@ public class UI {
 
                     document.addAuthor(newAuthor);
                     return;
-                case 2:
+                }
+                case "Delete" -> {
                     if (document.getAuthors().size() <= 1) {
                         if (inputChoiceBoolean(UIMsg.objectCannotActionMsg("action", "proceeded", "there is only 1 author")))
                             continue;
@@ -423,8 +420,10 @@ public class UI {
                         document.removeAuthor(delAuthor);
 
                     return;
+                }
             }
-        } while (true);
+        }
+        while (true);
     }
 
     private static void modifyDocumentClass(Document document, String attr, String type) {
@@ -485,7 +484,7 @@ public class UI {
     }
 
     private static void deleteDocument() {
-        Document delDoc = searchDocument("delete");
+        DocInterface delDoc = searchDocument("delete");
         if (delDoc == null)
             return;
 
@@ -493,51 +492,55 @@ public class UI {
             library.deleteDocument(delDoc.getCode());
     }
 
+    private static void deleteAllDocuments() {
+//        if (inputChoiceBoolean(UIMsg.objectDeletionMsg("ALL DOCUMENTS" + System.lineSeparator(), "Document")))
+//            library.getDocuments().forEach(doc -> library.deleteDocument(doc.getCode()));
+    }
+
 
     private static void authors() {
+        ArrayList<String> choiceList = new ArrayList<>(Arrays.asList("Print All", "Search Author", "Add Author", "Modify Author", "Delete Author", "Back to Main Menu"));
+
         do {
-            switch (inputChoiceRange(UIMsg.authorsMenu(), 0, 5)) {
-                case 0:
-                    return;
-                case 1:
+            int choice = inputChoiceRange(UIMsg.subMenus("Authors", choiceList), 0, choiceList.size() - 1);
+            if (choice == 0) // Back to Main Menu
+                return;
+
+            switch (choiceList.get(choice - 1)) {
+                case "Print All" -> {
                     System.out.println(new LibraryPrint(library).printAuthors());
                     pressEnter();
-                    break;
-                case 2:
-                    searchAndPrintAuthor();
-                    break;
-                case 3:
-                    addAuthor();
-                    break;
-                case 4:
-                    modifyAuthor();
-                    break;
-                case 5:
-                    deleteAuthor();
-                    break;
-                default:
-                    throw new RuntimeException();
+                }
+                case "Search Author" -> searchAndPrintAuthor();
+                case "Add Author" -> addAuthor();
+                case "Modify Author" -> modifyAuthor();
+                case "Delete Author" -> deleteAuthor();
+                default -> throw new RuntimeException();
             }
         } while (true);
     }
 
     private static void searchAndPrintAuthor() {
+        ArrayList<String> choiceList = new ArrayList<>(Arrays.asList("Try something else", "Add Author", "Cancel"));
+
         do {
             try {
-                System.out.println(new LibraryPrint(library).printAuthor(inputLine(UIMsg.searchAuthorMsg())));
+                System.out.println(new LibraryPrint(library).printAuthor(inputLine(UIMsg.actionMsg("Name", "Author", "search"))));
                 pressEnter();
                 return;
             } catch (IndexOutOfBoundsException e) {
-                switch (inputChoiceRange(UIMsg.objectNotFoundAndAddMsg("Author"), 0, 2)) {
-                    case 0:
-                        return;
-                    case 1:
-                        break;
-                    case 2:
+                int choice = inputChoiceRange(UIMsg.objectNotFoundAndAddMsg("Author", choiceList), 0, choiceList.size() - 1);
+                if (choice == 0) // Cancel
+                    return;
+
+                switch (choiceList.get(choice - 1)) {
+                    case "Try something else" -> {
+                    }
+                    case "Add Author" -> {
                         addAuthor();
                         return;
-                    default:
-                        throw new RuntimeException();
+                    }
+                    default -> throw new RuntimeException();
                 }
             }
         } while (true);
@@ -546,7 +549,7 @@ public class UI {
     private static Author searchAuthor(String action) {
         do {
             try {
-                return library.getAuthor(inputLine(UIMsg.findMsg("Name", "Author", action)));
+                return library.getAuthor(inputLine(UIMsg.actionMsg("Name", "Author", action)));
 
             } catch (IndexOutOfBoundsException e) {
                 if (!inputChoiceBoolean(UIMsg.objectNotFoundMsg("Author")))
@@ -630,22 +633,22 @@ public class UI {
     }
 
     private static void dummyData() {
-        library.addAuthor(new Author("theodosis", new GregorianCalendar(1998, 4, 15).toZonedDateTime(), "one of the best"));
-        library.addAuthor(new Author("niki", new GregorianCalendar(1972, 0, 22).toZonedDateTime(), "one of the best"));
-        library.addAuthor(new Author("rallis", new GregorianCalendar(1964, 1, 27).toZonedDateTime(), "one of the best"));
-        library.addAuthor(new Author("panos", new GregorianCalendar(1998, 8, 17).toZonedDateTime(), "one of the best"));
-        library.addAuthor(new Author("nikos", new GregorianCalendar(1998, 3, 6).toZonedDateTime(), "one of the best"));
-        library.addAuthor(new Author("george", new GregorianCalendar(1998, 3, 27).toZonedDateTime(), "one of the best"));
+        library.addAuthor(new Author("theodosis", new GregorianCalendar(1998, Calendar.MAY, 15).toZonedDateTime(), "One of the best"));
+        library.addAuthor(new Author("niki", new GregorianCalendar(1972, Calendar.JANUARY, 22).toZonedDateTime(), "One of the best"));
+        library.addAuthor(new Author("rallis", new GregorianCalendar(1964, Calendar.FEBRUARY, 27).toZonedDateTime(), "One of the best"));
+        library.addAuthor(new Author("panos", new GregorianCalendar(1998, Calendar.SEPTEMBER, 17).toZonedDateTime(), "One of the best"));
+        library.addAuthor(new Author("nikos", new GregorianCalendar(1998, Calendar.APRIL, 6).toZonedDateTime(), "One of the best"));
+        library.addAuthor(new Author("george", new GregorianCalendar(1998, Calendar.APRIL, 27).toZonedDateTime(), "One of the best"));
 
-        library.addDocument(new Book("1001", "book", 2000, 100, 100,
+        library.addDocument(new Book("1001", "Book", 2000, 100, 100,
                 "someone", "0001", new ArrayList<>(Arrays.asList(library.getAuthor("panos"), library.getAuthor("nikos")))));
-        library.addDocument(new Journal("1002", "journal", 2000, 100, 100,
+        library.addDocument(new Journal("1002", "Journal", 2000, 100, 100,
                 "someone", "0001", 1, 1));
-        library.addDocument(new BachelorThesis("1003", "bachelor", 2000, 100, 100,
+        library.addDocument(new BachelorThesis("1003", "Bachelor", 2000, 100, 100,
                 library.getAuthor("theodosis"), "somebody", "csd", "auth"));
-        library.addDocument(new MasterThesis("1004", "master", 2000, 100, 100,
+        library.addDocument(new MasterThesis("1004", "Master", 2000, 100, 100,
                 library.getAuthor("niki"), "somebody", "csd", "auth"));
-        library.addDocument(new DoctoralThesis("1005", "doctoral", 2000, 100, 100,
+        library.addDocument(new DoctoralThesis("1005", "Doctoral", 2000, 100, 100,
                 library.getAuthor("rallis"), "somebody", "csd", "auth"));
 
     }

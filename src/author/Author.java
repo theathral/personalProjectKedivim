@@ -1,20 +1,20 @@
 package author;
 
-import document.Document;
-import document.thesis.Thesis;
+import document.DocInterface;
 import utils.MyUtilities;
 
 import java.io.Serializable;
 import java.time.ZonedDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Author implements Serializable {
 
     private String name;
     private ZonedDateTime dateOfBirth;
-    private ArrayList<Document> documents;
+    private final ArrayList<DocInterface> documents;
     private String description;
-    private HashMap<String, Integer> publishers;
+    private final HashMap<String, Integer> publishers;
 
     public Author(String name, ZonedDateTime dateOfBirth, String description) {
         setName(name);
@@ -32,43 +32,27 @@ public class Author implements Serializable {
         this.name = MyUtilities.checkString(name);
     }
 
-    public ZonedDateTime getDateOfBirth() {
-        return dateOfBirth;
-    }
-
     public void setDateOfBirth(ZonedDateTime dateOfBirth) throws IllegalArgumentException {
         this.dateOfBirth = dateOfBirth;
     }
 
-    public ArrayList<Document> getDocuments() {
+    public ArrayList<DocInterface> getDocuments() {
         return documents;
     }
 
-    public void setDocuments(ArrayList<Document> documents) throws IllegalArgumentException {
-        this.documents = documents;
-    }
-
-    public void addDocument(Document document) throws IndexOutOfBoundsException {
+    public void addDocument(DocInterface document) throws IndexOutOfBoundsException {
         if (documents.contains(document))
             throw new IndexOutOfBoundsException();
 
         documents.add(document);
     }
 
-    public void removeDocument(Document document) throws IndexOutOfBoundsException {
+    public void removeDocument(DocInterface document) throws IndexOutOfBoundsException {
         documents.remove(document);
-    }
-
-    public String getDescription() {
-        return description;
     }
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public HashMap<String, Integer> getPublisherCounters() {
-        return publishers;
     }
 
     public void addPublisher(String name) throws IllegalArgumentException {

@@ -19,10 +19,6 @@ public abstract class Thesis extends Document {
         setUniversity(university);
     }
 
-    public Author getAuthor() {
-        return author;
-    }
-
     public void setAuthor(Author author) throws NullPointerException {
         if (this.author != null)
             remove();
@@ -30,24 +26,12 @@ public abstract class Thesis extends Document {
         add();
     }
 
-    public String getSupervisor() {
-        return supervisor;
-    }
-
     public void setSupervisor(String supervisor) {
         this.supervisor = supervisor;
     }
 
-    public String getDepartment() {
-        return department;
-    }
-
     public void setDepartment(String department) throws IllegalArgumentException {
         this.department = MyUtilities.checkString(department);
-    }
-
-    public String getUniversity() {
-        return university;
     }
 
     public void setUniversity(String university) throws IllegalArgumentException {
@@ -55,12 +39,12 @@ public abstract class Thesis extends Document {
     }
 
     @Override
-    public void add() {
+    public void add() throws IndexOutOfBoundsException {
         author.addDocument(this);
     }
 
     @Override
-    public void remove() {
+    public void remove() throws IndexOutOfBoundsException {
         author.removeDocument(this);
     }
 

@@ -47,7 +47,7 @@ public class Book extends Paper {
     }
 
     @Override
-    public void add() {
+    public void add() throws IndexOutOfBoundsException {
         authors.forEach(author -> {
             author.addPublisher(getPublisher());
             author.addDocument(this);
@@ -55,7 +55,7 @@ public class Book extends Paper {
     }
 
     @Override
-    public void remove() {
+    public void remove() throws IndexOutOfBoundsException {
         for (int i = 0; i < authors.size(); i++) {
             removeAuthor(i);
         }

@@ -1,15 +1,9 @@
 package utils;
 
-import java.util.TreeMap;
-
 public class LibraryPrint {
 
     private static final String sep = "||--------------------||";
     private final Library library;
-
-    public LibraryPrint() {
-        this.library = new Library();
-    }
 
     public LibraryPrint(Library library) {
         this.library = library;
@@ -45,12 +39,6 @@ public class LibraryPrint {
         });
 
         return str.toString();
-    }
-
-    public String printDocument(int index) {
-        return sep + System.lineSeparator() + System.lineSeparator()
-                + library.getDocument(index)
-                + System.lineSeparator() + sep + System.lineSeparator() + System.lineSeparator();
     }
 
     public String printDocumentWithCode(String code) {
@@ -94,12 +82,6 @@ public class LibraryPrint {
         });
 
         return str.toString();
-    }
-
-    public String printAuthor(int index) {
-        return sep + System.lineSeparator() + System.lineSeparator()
-                + library.getAuthor(index)
-                + System.lineSeparator() + sep + System.lineSeparator() + System.lineSeparator();
     }
 
     public String printAuthor(String name) {

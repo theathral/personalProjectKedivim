@@ -2,7 +2,7 @@ package utils;
 
 import java.time.Year;
 import java.time.ZonedDateTime;
-import java.util.*;
+import java.util.GregorianCalendar;
 
 public class MyUtilities {
 
@@ -30,8 +30,7 @@ public class MyUtilities {
 
     public static int checkRange(int num, int min, int max) throws IllegalArgumentException {
         checkMin(num, min);
-        checkMax(num, max);
-        return num;
+        return checkMax(num, max);
     }
 
     public static int checkYear(int year) throws IllegalArgumentException {
@@ -53,13 +52,4 @@ public class MyUtilities {
 
         return new GregorianCalendar(year, month - 1, day).toZonedDateTime();
     }
-
-    public static String checkInArrayList(String str, ArrayList<String> list) throws IllegalArgumentException, NullPointerException {
-        String s = str.trim().toUpperCase();
-        if (!list.contains(s))
-            throw new IllegalArgumentException();
-
-        return s;
-    }
-
 }

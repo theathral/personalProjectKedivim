@@ -2,20 +2,21 @@ package utils;
 
 import author.Author;
 import document.Book;
-import document.Document;
+import document.DocInterface;
 import document.Journal;
-import document.thesis.*;
+import document.thesis.BachelorThesis;
+import document.thesis.DoctoralThesis;
+import document.thesis.MasterThesis;
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.TreeMap;
 
 public class Library implements Serializable {
 
     private TreeMap<String, Class<?>> typeOfDocuments;
-    private ArrayList<Document> documents;
-    private ArrayList<Author> authors;
+    private final ArrayList<DocInterface> documents;
+    private final ArrayList<Author> authors;
 
     public Library() {
         setTypeOfDocuments();
@@ -38,20 +39,20 @@ public class Library implements Serializable {
     }
 
 
-    public ArrayList<Document> getDocuments() {
+    public ArrayList<DocInterface> getDocuments() {
         return documents;
     }
 
-    public Document getDocument(int index) {
+    public DocInterface getDocument(int index) {
         return documents.get(index);
     }
 
-    public Document getDocument(String code) throws IndexOutOfBoundsException {
+    public DocInterface getDocument(String code) throws IndexOutOfBoundsException {
         return documents.get(findDocumentByCode(code));
     }
 
-    public ArrayList<Document> getDocumentWithTitle(String title) {
-        ArrayList<Document> docs = new ArrayList<>();
+    public ArrayList<DocInterface> getDocumentWithTitle(String title) {
+        ArrayList<DocInterface> docs = new ArrayList<>();
 
         findDocumentByTitle(title).forEach(idx -> docs.add(getDocument(idx)));
 
@@ -62,25 +63,12 @@ public class Library implements Serializable {
         return authors;
     }
 
-    public Author getAuthor(int index) {
-        return authors.get(index);
-    }
-
     public Author getAuthor(String name) throws IndexOutOfBoundsException {
         return authors.get(findAuthor(name));
     }
 
 
-    public void setDocuments(ArrayList<Document> documents) {
-        this.documents = documents;
-    }
-
-    public void setAuthors(ArrayList<Author> authors) {
-        this.authors = authors;
-    }
-
-
-    public void addDocument(Document document) throws IllegalArgumentException {
+    public void addDocument(DocInterface document) throws IllegalArgumentException {
         if (documents.contains(document))
             throw new IllegalArgumentException();
 
@@ -100,11 +88,6 @@ public class Library implements Serializable {
         documents.remove(findDocumentByCode(code));
     }
 
-    public void deleteDocument(int index) throws IndexOutOfBoundsException {
-        getDocument(index).remove();
-        documents.remove(index);
-    }
-
     public void deleteAuthor(String name) throws IndexOutOfBoundsException {
         authors.remove(findAuthor(name));
     }
@@ -113,7 +96,7 @@ public class Library implements Serializable {
     public int countDocumentsClass(Class<?> myClass) {
         int counter = 0;
 
-        for (Document doc : documents) {
+        for (DocInterface doc : documents) {
             if (doc.getClass() == myClass)
                 counter++;
         }
@@ -140,14 +123,6 @@ public class Library implements Serializable {
             if (t.contains(documents.get(i).getTitle()))
                 indexes.add(i);
         }
-
-        return indexes;
-    }
-
-    public ArrayList<String> findDocumentsByAuthor(String name) throws IllegalArgumentException {
-        ArrayList<String> indexes = new ArrayList<>();
-
-        authors.get(findAuthor(name)).getDocuments().forEach(doc -> indexes.add(doc.getCode()));
 
         return indexes;
     }
