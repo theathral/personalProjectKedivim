@@ -62,8 +62,4 @@ public class MyUtilities {
         return s;
     }
 
-    public static <T> T castObject(Class<T> clazz, Object object) {
-        return (T) object;
-    }
-
 }

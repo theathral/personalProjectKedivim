@@ -2,6 +2,7 @@ package document;
 
 import author.Author;
 
+import javax.swing.plaf.synth.SynthTextAreaUI;
 import java.util.ArrayList;
 
 public class Book extends Paper {
@@ -24,6 +25,7 @@ public class Book extends Paper {
             throw new IndexOutOfBoundsException();
 
         this.authors = authors;
+        add();
     }
 
     public void addAuthor(Author author) throws IndexOutOfBoundsException {
@@ -62,7 +64,8 @@ public class Book extends Paper {
         str.append(super.toString());
 
         str.append("Authors: ");
-        authors.forEach(author -> str.append(author.getName()));
+        authors.forEach(author -> str.append(author.getName()).append(", "));
+        str.append(System.lineSeparator());
 
         return str.toString();
     }

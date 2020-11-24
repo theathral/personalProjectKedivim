@@ -10,14 +10,13 @@ import document.thesis.DoctoralThesis;
 import document.thesis.MasterThesis;
 import document.thesis.Thesis;
 
-import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
 import java.time.Year;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
+import java.util.GregorianCalendar;
 import java.util.Scanner;
 
 public class UI {
@@ -28,6 +27,8 @@ public class UI {
     private static final Scanner scanner = new Scanner(System.in);
 
     public static void main(String[] args) {
+        dummyData();
+
         System.out.println(UIMsg.welcomeMsg());
         pressEnter();
 
@@ -90,16 +91,6 @@ public class UI {
             try {
                 System.out.print(msg);
                 return MyUtilities.checkMin(Integer.parseInt(scanner.nextLine()), min);
-            } catch (Exception ignored) {
-            }
-        } while (true);
-    }
-
-    private static int inputChoiceMax(String msg, int max) {
-        do {
-            try {
-                System.out.print(msg);
-                return MyUtilities.checkMax(Integer.parseInt(scanner.nextLine()), max);
             } catch (Exception ignored) {
             }
         } while (true);
@@ -289,62 +280,25 @@ public class UI {
         int numOfCopies = inputChoiceMin(UIMsg.inputMsg("Number of Copies", choiceStr), 0);
 
         switch (choiceStr) {
-//            case "Book" -> {
-//                publisher = inputLine(UIMsg.inputMsg("Publisher", choiceStr));
-//                isbn = inputLine(UIMsg.inputMsg("ISBN", choiceStr));
-//
-//                int curAuthors = 0;
-//                do {
-//                    do {
-//                        try {
-//                            String name = inputLine(UIMsg.inputMsg("Name", "Author"));
-//
-//                            int index = library.findAuthor(name);
-//                            if (index != -1) {
-//                                authorList.add(library.getAuthor(index));
-//                                break;
-//                            }
-//
-//                            int newAuthorChoice = inputChoiceRange(UIMsg.objectNotFoundAndAddMsg("Author"), 0, 2);
-//                            if (newAuthorChoice == 0)
-//                                return;
-//                            else if (newAuthorChoice == 1)
-//                                break;
-//                            else if (newAuthorChoice == 2) {
-//                                int authorSize = library.getAuthors().size();
-//                                addAuthor();
-//                                if (library.getAuthors().size() == authorSize + 1) {
-//                                    authorList.add(library.getAuthor(library.getAuthors().size() - 1));
-//                                    break;
-//                                } else
-//                                    System.out.println(UIMsg.wrongCreationMsg("Author"));
-//                            } else
-//                                throw new RuntimeException();
-//                        } catch (IllegalArgumentException ignored) {
-//                        }
-//                    } while (true);
-//
-//                    curAuthors++;
-//                    if (curAuthors >= 5)
-//                        break;
-//
-//                    int addMoreAuthorsChoice = inputChoiceRange(UIMsg.addMoreAuthors(), 0, 2);
-//                    if (addMoreAuthorsChoice == 0)
-//                        return;
-//                    else if (addMoreAuthorsChoice == 2)
-//                        break;
-//                    else if (addMoreAuthorsChoice != 1)
-//                        throw new RuntimeException();
-//                } while (true);
-//
-//                newDoc = (new Book(code, title, year, numOfPages, numOfCopies, publisher, isbn, authorList));
-//            }
-            case "Journal" -> {
+            case "Book", "Journal" -> {
                 String publisher = inputLine(UIMsg.inputMsg("Publisher", choiceStr));
                 String isbn = inputLine(UIMsg.inputMsg("ISBN", choiceStr));
-                int volume = inputChoiceMin(UIMsg.inputMsg("Volume", choiceStr), 1);
-                int issue = inputChoiceMin(UIMsg.inputMsg("Issue", choiceStr), 0);
-                newDoc = new Journal(code, title, year, numOfPages, numOfCopies, publisher, isbn, volume, issue);
+
+                switch (choiceStr) {
+                    case "Book" -> {
+                        ArrayList<Author> authorsList = addBookAuthors();
+                        if (authorsList == null)
+                            return;
+
+                        newDoc = (new Book(code, title, year, numOfPages, numOfCopies, publisher, isbn, authorsList));
+                    }
+                    case "Journal" -> {
+                        int volume = inputChoiceMin(UIMsg.inputMsg("Volume", choiceStr), 1);
+                        int issue = inputChoiceMin(UIMsg.inputMsg("Issue", choiceStr), 0);
+                        newDoc = new Journal(code, title, year, numOfPages, numOfCopies, publisher, isbn, volume, issue);
+                    }
+                    default -> throw new RuntimeException();
+                }
             }
             case "Bachelor Thesis", "Master Thesis", "Doctoral Thesis" -> {
                 Author author = searchAuthor("add");
@@ -359,7 +313,7 @@ public class UI {
                     case "Bachelor Thesis" -> new BachelorThesis(code, title, year, numOfPages, numOfCopies, author, supervisor, department, university);
                     case "Master Thesis" -> new MasterThesis(code, title, year, numOfPages, numOfCopies, author, supervisor, department, university);
                     case "Doctoral Thesis" -> new DoctoralThesis(code, title, year, numOfPages, numOfCopies, author, supervisor, department, university);
-                    default -> null;
+                    default -> throw new RuntimeException();
                 };
             }
             default -> throw new RuntimeException();
@@ -368,6 +322,27 @@ public class UI {
         if (inputChoiceBoolean(UIMsg.newObjectCreatedMsg(newDoc, "Document"))) {
             library.addDocument(newDoc);
         }
+    }
+
+    private static ArrayList<Author> addBookAuthors() {
+        ArrayList<Author> authorsList = new ArrayList<>();
+        do {
+            authorsList.add(searchAuthor("add"));
+            if (authorsList.get(authorsList.size() - 1) == null)
+                return null;
+
+            if (authorsList.size() >= 5)
+                return authorsList;
+
+            int addMoreAuthorsChoice = inputChoiceRange(UIMsg.addMoreAuthors(), 0, 2);
+            if (addMoreAuthorsChoice == 0)
+                return null;
+            else if (addMoreAuthorsChoice == 2)
+                return authorsList;
+            else if (addMoreAuthorsChoice != 1)
+                throw new RuntimeException();
+
+        } while (true);
     }
 
     private static void modifyDocument() {
@@ -441,10 +416,10 @@ public class UI {
     }
 
     private static void modifyBookClass(Book document, String attr) {
-//        if (document.equals("Authors"))
+//        if (attr.equals("Authors"))
 //            document.setAuthors(inputLine(UIMsg.inputMsg("new Publisher", "Book")));
 //        else
-        modifyDocumentClass(document, attr, "Book");
+            modifyPaperClass(document, attr, "Book");
     }
 
     private static void modifyJournalClass(Journal document, String attr) {
@@ -608,5 +583,26 @@ public class UI {
         if (inputChoiceBoolean(UIMsg.objectDeletionMsg(delAuthor, "Author")))
             library.deleteAuthor(delAuthor.getName());
     }
+
+    private static void dummyData() {
+        library.addAuthor(new Author("theodosis", new GregorianCalendar(1998, 4, 15).toZonedDateTime(), "one of the best"));
+        library.addAuthor(new Author("niki", new GregorianCalendar(1972, 0, 22).toZonedDateTime(), "one of the best"));
+        library.addAuthor(new Author("rallis", new GregorianCalendar(1964, 1, 27).toZonedDateTime(), "one of the best"));
+        library.addAuthor(new Author("panos", new GregorianCalendar(1998, 8, 17).toZonedDateTime(), "one of the best"));
+        library.addAuthor(new Author("nikos", new GregorianCalendar(1998, 3, 6).toZonedDateTime(), "one of the best"));
+
+        library.addDocument(new Book("1001", "book", 2000, 100, 100,
+                "someone", "0001", new ArrayList<>(Arrays.asList(library.getAuthor("panos"), library.getAuthor("nikos")))));
+        library.addDocument(new Journal("1002", "journal", 2000, 100, 100,
+                "someone", "0001", 1, 1));
+        library.addDocument(new BachelorThesis("1003", "bachelor", 2000, 100, 100,
+                library.getAuthor("theodosis"), "somebody", "csd", "auth"));
+        library.addDocument(new MasterThesis("1004", "bachelor", 2000, 100, 100,
+                library.getAuthor("niki"), "somebody", "csd", "auth"));
+        library.addDocument(new DoctoralThesis("1005", "bachelor", 2000, 100, 100,
+                library.getAuthor("rallis"), "somebody", "csd", "auth"));
+
+    }
+
 
 }
