@@ -387,16 +387,52 @@ public class UI {
         return attributes;
     }
 
-    private static void modifyAuthorDocument(Document document) {
+    private static void modifyAuthorDocument(Book document) {
+        do {
+            switch (inputChoiceRange(UIMsg.modifyAuthorsDocument(), 0, 2)) {
+                case 0:
+                    return;
+                case 1:
+                    if (document.getAuthors().size() >= 5) {
+                        if (inputChoiceBoolean(UIMsg.objectCannotActionMsg("action", "proceeded", "there are already 5 authors")))
+                            continue;
+                        return;
+                    }
 
-//        library.findAuthor();
+                    Author newAuthor = searchAuthor("add");
+                    if (newAuthor == null)
+                        return;
 
+                    if (document.getAuthors().contains(newAuthor)) {
+                        if (inputChoiceBoolean(UIMsg.objectFoundMsg("Author")))
+                            continue;
+                        return;
+                    }
 
+                    document.addAuthor(newAuthor);
+                    return;
+                case 2:
+                    if (document.getAuthors().size() <= 1) {
+                        if (inputChoiceBoolean(UIMsg.objectCannotActionMsg("action", "proceeded", "there is only 1 author")))
+                            continue;
+                        return;
+                    }
+
+                    Author delAuthor = searchAuthor("remove");
+                    if (delAuthor != null)
+                        document.removeAuthor(delAuthor);
+
+                    return;
+            }
+        } while (true);
     }
 
     private static void modifyDocumentClass(Document document, String attr, String type) {
         switch (attr) {
-            case "Code" -> document.setTitle(searchDocumentCode(type));
+            case "Code" -> {
+                String code = searchDocumentCode(type);
+                document.setTitle(code);
+            }
             case "Title" -> document.setTitle(inputLine(UIMsg.inputMsg("new Title", type)));
             case "Year" -> document.setYear(inputChoiceRange(UIMsg.inputMsg("new Year", type), 1500, Year.now().getValue()));
             case "Number of Pages" -> document.setNumOfPages(inputChoiceMin(UIMsg.inputMsg("new Number of Pages", type), 1));
@@ -416,9 +452,9 @@ public class UI {
     }
 
     private static void modifyBookClass(Book document, String attr) {
-//        if (attr.equals("Authors"))
-//            document.setAuthors(inputLine(UIMsg.inputMsg("new Publisher", "Book")));
-//        else
+        if (attr.equals("Authors"))
+            modifyAuthorDocument(document);
+        else
             modifyPaperClass(document, attr, "Book");
     }
 
@@ -433,7 +469,13 @@ public class UI {
 
     private static void modifyThesisClass(Thesis document, String attr, String type) {
         switch (attr) {
-//            case "Author" -> document.setPublisher(inputLine(UIMsg.inputMsg("new Author", typeThesis)));
+            case "Author" -> {
+                Author modAuthor = searchAuthor("replace with");
+                if (modAuthor == null)
+                    return;
+
+                document.setAuthor(modAuthor);
+            }
             case "Supervisor" -> document.setSupervisor(inputLine(UIMsg.inputMsg("new Supervisor", type)));
             case "Department" -> document.setDepartment(inputLine(UIMsg.inputMsg("new Department", type)));
             case "University" -> document.setUniversity(inputLine(UIMsg.inputMsg("new University", type)));
@@ -554,7 +596,10 @@ public class UI {
             return;
 
         switch (attributes.get(choice - 1)) {
-            case "Name" -> modAuthor.setName(searchNameAuthor());
+            case "Name" -> {
+                String name = searchNameAuthor();
+                modAuthor.setName(name);
+            }
             case "Date of Birth" -> modAuthor.setDateOfBirth(inputDate(UIMsg.inputMsg("new Date of Birth", "Author")));
             case "Description" -> modAuthor.setDescription(inputLine(UIMsg.inputMsg("new Description", "Author")));
         }
@@ -590,6 +635,7 @@ public class UI {
         library.addAuthor(new Author("rallis", new GregorianCalendar(1964, 1, 27).toZonedDateTime(), "one of the best"));
         library.addAuthor(new Author("panos", new GregorianCalendar(1998, 8, 17).toZonedDateTime(), "one of the best"));
         library.addAuthor(new Author("nikos", new GregorianCalendar(1998, 3, 6).toZonedDateTime(), "one of the best"));
+        library.addAuthor(new Author("george", new GregorianCalendar(1998, 3, 27).toZonedDateTime(), "one of the best"));
 
         library.addDocument(new Book("1001", "book", 2000, 100, 100,
                 "someone", "0001", new ArrayList<>(Arrays.asList(library.getAuthor("panos"), library.getAuthor("nikos")))));
@@ -597,9 +643,9 @@ public class UI {
                 "someone", "0001", 1, 1));
         library.addDocument(new BachelorThesis("1003", "bachelor", 2000, 100, 100,
                 library.getAuthor("theodosis"), "somebody", "csd", "auth"));
-        library.addDocument(new MasterThesis("1004", "bachelor", 2000, 100, 100,
+        library.addDocument(new MasterThesis("1004", "master", 2000, 100, 100,
                 library.getAuthor("niki"), "somebody", "csd", "auth"));
-        library.addDocument(new DoctoralThesis("1005", "bachelor", 2000, 100, 100,
+        library.addDocument(new DoctoralThesis("1005", "doctoral", 2000, 100, 100,
                 library.getAuthor("rallis"), "somebody", "csd", "auth"));
 
     }

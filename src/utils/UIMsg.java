@@ -126,6 +126,13 @@ public class UIMsg {
                 + "0 -> Cancel" + System.lineSeparator();
     }
 
+    static String modifyAuthorsDocument() {
+        return "Actions to authors of the Book (Enter a number):" + System.lineSeparator()
+                + "1 -> Add New" + System.lineSeparator()
+                + "2 -> Delete" + System.lineSeparator()
+                + "0 -> Cancel" + System.lineSeparator();
+    }
+
 
     static String attributesListMsg(ArrayList<String> attributes) {
         return "Which attribute do you want to modify? (Enter a number)" + System.lineSeparator()

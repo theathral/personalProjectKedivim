@@ -2,14 +2,12 @@ package document;
 
 import author.Author;
 
-import javax.swing.plaf.synth.SynthTextAreaUI;
 import java.util.ArrayList;
 
 public class Book extends Paper {
 
     private static final int MAX_AUTHORS = 5;
     private ArrayList<Author> authors;
-
 
     public Book(String code, String title, int year, int numOfPages, int numOfCopies, String publisher, String ISBN, ArrayList<Author> authors) {
         super(code, title, year, numOfPages, numOfCopies, publisher, ISBN);
@@ -32,7 +30,14 @@ public class Book extends Paper {
         if (authors.size() >= MAX_AUTHORS)
             throw new IndexOutOfBoundsException();
 
+        author.addPublisher(getPublisher());
+        author.addDocument(this);
+
         authors.add(author);
+    }
+
+    public void removeAuthor(Author author) throws IndexOutOfBoundsException {
+        removeAuthor(authors.indexOf(author));
     }
 
     public void removeAuthor(int index) throws IndexOutOfBoundsException {

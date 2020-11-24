@@ -71,23 +71,19 @@ public class Author implements Serializable {
         return publishers;
     }
 
-    public void setPublishers(HashMap<String, Integer> publishers) {
-        this.publishers = publishers;
-    }
-
     public void addPublisher(String name) throws IllegalArgumentException {
         String n = MyUtilities.checkString(name);
 
-        if (publishers.containsKey(n))
-            publishers.put(n, publishers.getOrDefault(n, 0) + 1);
+        publishers.put(n, publishers.getOrDefault(n, 0) + 1);
     }
 
     public void deceaseOrRemovePublisher(String name) throws IllegalArgumentException, NullPointerException {
         String n = MyUtilities.checkString(name);
 
-        if (publishers.get(n) <= 1)
+        if (publishers.get(n) <= 1) {
             publishers.remove(n);
-
+            return;
+        }
         publishers.put(n, publishers.get(n) - 1);
     }
 
