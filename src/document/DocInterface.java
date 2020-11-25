@@ -65,4 +65,3 @@ public interface DocInterface {
     @Override
     String toString();
 }
-

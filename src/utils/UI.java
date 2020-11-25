@@ -245,7 +245,7 @@ public class UI {
             try {
                 String code = inputLine(UIMsg.inputMsg("Code", typeDoc));
 
-                if (library.findDocumentByCode(code) == -1)
+                if (library.documentExists(code))
                     return code;
 
                 if (!inputChoiceBoolean(UIMsg.objectFoundMsg("Document")))
@@ -568,7 +568,7 @@ public class UI {
         do {
             try {
                 String name = inputLine(UIMsg.inputMsg("Name", "Author"));
-                if (library.findAuthor(name) == -1)
+                if (library.authorExists(name))
                     return name;
 
                 if (!inputChoiceBoolean(UIMsg.objectFoundMsg("Author")))
@@ -657,6 +657,4 @@ public class UI {
                 library.getAuthor("Rallies"), "Somebody", "CSD", "AUTH"));
 
     }
-
-
 }

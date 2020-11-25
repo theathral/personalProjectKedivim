@@ -12,6 +12,8 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.TreeMap;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * Class {@code Library} stores a library with a list of Documents and a list of Authors.
@@ -19,7 +21,7 @@ import java.util.TreeMap;
 public class Library implements Serializable {
 
     /**
-     * Seperation String between Documents' or Authors' instances
+     * Separation String between Documents' or Authors' instances
      */
     private static final String sep = "||--------------------||";
 
@@ -187,6 +189,12 @@ public class Library implements Serializable {
     }
 
 
+    /**
+     * Sorts a list of {@code Document} instances and returns a new sorted list.
+     *
+     * @param oldList The list to be sorted
+     * @return The new sorted list
+     */
     private static ArrayList<DocInterface> copySortDocumentsByYear(ArrayList<DocInterface> oldList) {
         ArrayList<DocInterface> sortedList = new ArrayList<>(oldList);
         sortedList.sort(Comparator.comparing(DocInterface::getYear));
@@ -194,63 +202,109 @@ public class Library implements Serializable {
         return sortedList;
     }
 
+    /**
+     * Counts the number of {@code Document} instances of a type/class and returns the counted value
+     *
+     * @param myClass The class that the instances will be counted of
+     * @return Number of documents of a class
+     */
     private int countDocumentsClass(Class<?> myClass) {
-        int counter = 0;
-
-        for (DocInterface doc : documents) {
-            if (doc.getClass() == myClass)
-                counter++;
-        }
-
-        return counter;
+        return (int) documents.stream().filter(doc -> doc.getClass() == myClass).count();
     }
 
 
-    public int findDocumentByCode(String code) throws IllegalArgumentException {
+    /**
+     * Finds the Library's Document with code value equals {@code code}
+     * If it exists, returns the index where the document is located in the list of documents.
+     * -1, otherwise.
+     *
+     * @param code Code of the {@code Document}
+     * @return The index where the document is located in the list of documents
+     * @throws IllegalArgumentException If the code is an empty String
+     */
+    private int findDocumentByCode(String code) throws IllegalArgumentException {
         String c = MyUtilities.checkString(code);
 
-        for (int i = 0; i < documents.size(); i++) {
-            if (c.equals(documents.get(i).getCode()))
-                return i;
-        }
-
-        return -1;
+        return IntStream.range(0, documents.size()).filter(i -> c.equals(documents.get(i).getCode())).findFirst().orElse(-1);
     }
 
-    public ArrayList<Integer> findDocumentByTitle(String title) throws IllegalArgumentException {
+    /**
+     * Finds the Library's Documents with title value contains {@code title}.
+     *
+     * @param title Title of the {@code Document}
+     * @return The indexes where the documents are located in the list of documents
+     * @throws IllegalArgumentException If title is an empty String
+     */
+    private ArrayList<Integer> findDocumentByTitle(String title) throws IllegalArgumentException {
         String t = MyUtilities.checkString(title);
-        ArrayList<Integer> indexes = new ArrayList<>();
 
-        for (int i = 0; i < documents.size(); i++) {
-            if (documents.get(i).getTitle().contains(t))
-                indexes.add(i);
-        }
-
-        return indexes;
+        return IntStream.range(0, documents.size()).filter(i -> documents.get(i).getTitle().contains(t)).boxed().collect(Collectors.toCollection(ArrayList::new));
     }
 
-    public int findAuthor(String name) throws IllegalArgumentException {
+    /**
+     * Finds the Library's Author with name value equals {@code name}.
+     *
+     * @param name Name of the {@code Author}
+     * @return The index where the author is located in the list of authors
+     * @throws IllegalArgumentException If name is an empty String
+     */
+    private int findAuthor(String name) throws IllegalArgumentException {
         String n = MyUtilities.checkString(name);
 
-        for (int i = 0; i < authors.size(); i++) {
-            if (n.equals(authors.get(i).getName()))
-                return i;
-        }
-
-        return -1;
+        return IntStream.range(0, authors.size()).filter(i -> n.equals(authors.get(i).getName())).findFirst().orElse(-1);
     }
 
 
+    /**
+     * If the document exists, returns {@code True}. {@code False} otherwise.
+     *
+     * @param code Code of the {@code Document}
+     * @return {@code True} if the document exists, {@code False} otherwise.
+     */
+    public boolean documentExists(String code) {
+        return findDocumentByCode(code) != -1;
+    }
+
+    /**
+     * If the author exists, returns {@code True}. {@code False} otherwise.
+     *
+     * @param name Name of the {@code Author}
+     * @return {@code True} if the author exists, {@code False} otherwise.
+     */
+    public boolean authorExists(String name) {
+        return findAuthor(name) != -1;
+    }
+
+
+    /**
+     * Saves to text file {@code filepath}, a given String {@code result}.
+     *
+     * @param result   The String that will be saved
+     * @param filePath The file that will be created
+     * @throws IOException If action fails
+     */
     public void saveToFile(String result, String filePath) throws IOException {
         FileWriter writer = new FileWriter(new File(filePath));
         writer.write(result);
         writer.close();
     }
 
+    /**
+     * Saves to binary file {@code path}, the current {@code Library} instance.
+     *
+     * @param path The file that will be created
+     * @throws IOException If action fails
+     */
     public void writeToBinaryFile(String path) throws IOException {
         new ObjectOutputStream(new FileOutputStream(new File(path))).writeObject(this);
     }
 
+    /**
+     * Loads a {@code Library} instance from a given file {@code path}.
+     *
+     * @param path The file that contains the {@code Library} instance
+     * @throws IOException If action fails
+     */
     public Library loadFile(String path) throws IllegalArgumentException, IOException, ClassNotFoundException {
         if (!getDocuments().isEmpty() || !getAuthors().isEmpty())
             throw new IllegalArgumentException();
@@ -259,6 +313,11 @@ public class Library implements Serializable {
     }
 
 
+    /**
+     * Prints to a String, the current statistics of the {@code Library} instance
+     *
+     * @return The current statistics of the {@code Library} instance
+     */
     public String printStatsStr() {
         StringBuilder str = new StringBuilder();
 
@@ -271,6 +330,11 @@ public class Library implements Serializable {
         return str.toString();
     }
 
+    /**
+     * Prints to a String, all the documents of the {@code Library} instance
+     *
+     * @return All the documents of the {@code Library} instance
+     */
     public String printDocumentsStr() {
         StringBuilder str = new StringBuilder();
 
@@ -291,12 +355,24 @@ public class Library implements Serializable {
         return str.toString();
     }
 
+    /**
+     * Finds and prints to a String, the document of the {@code Library} instance with a given {@code code}
+     *
+     * @param code The given {@code code}
+     * @return The document of the {@code Library} instance with the given code
+     */
     public String printDocumentWithCodeStr(String code) {
         return sep + System.lineSeparator() + System.lineSeparator()
                 + getDocument(code)
                 + System.lineSeparator() + sep + System.lineSeparator() + System.lineSeparator();
     }
 
+    /**
+     * Finds and prints to a String, the documents of the {@code Library} instance with a given {@code title}
+     *
+     * @param title The given {@code title}
+     * @return The documents of the {@code Library} instance with the given title
+     */
     public String printDocumentWithTitleStr(String title) throws IndexOutOfBoundsException {
         StringBuilder str = new StringBuilder();
 
@@ -314,6 +390,11 @@ public class Library implements Serializable {
         return str.toString();
     }
 
+    /**
+     * Prints to a String, all the authors of the {@code Library} instance
+     *
+     * @return All the authors of the {@code Library} instance
+     */
     public String printAuthorsStr() {
         StringBuilder str = new StringBuilder();
 
@@ -334,6 +415,12 @@ public class Library implements Serializable {
         return str.toString();
     }
 
+    /**
+     * Finds and prints to a String, the author of the {@code Library} instance with a given {@code name}
+     *
+     * @param name The given {@code name}
+     * @return The author of the {@code Library} instance with the given name
+     */
     public String printAuthorStr(String name) {
         return sep + System.lineSeparator() + System.lineSeparator()
                 + getAuthor(name)
