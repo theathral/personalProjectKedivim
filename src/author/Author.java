@@ -74,7 +74,7 @@ public class Author implements Serializable {
     }
 
     /**
-     * Adds a new document to the documents {@code ArrayList} instance.
+     * Adds a new document to the documents' {@code ArrayList} instance.
      * Throws {@code IllegalArgumentException} if the {@code document} already exists in the {@code ArrayList} instance.
      *
      * @param document The {@code Document} that will be added
@@ -89,10 +89,10 @@ public class Author implements Serializable {
 
     /**
      * Removes an existing document from the documents {@code ArrayList} instance.
-     * Throws {@code IllegalArgumentException} if the {@code document} does not exist in the {@code ArrayList} instance.
+     * Throws {@code IndexOutOfBoundsException} if the {@code document} does not exist in the {@code ArrayList} instance.
      *
      * @param document The {@code Document} that will be removed
-     * @throws IndexOutOfBoundsException If the {@code document} already exists in the {@code ArrayList} instance
+     * @throws IndexOutOfBoundsException If the {@code document} does not exist in the {@code ArrayList} instance
      */
     public void removeDocument(DocInterface document) throws IndexOutOfBoundsException {
         if (!documents.contains(document))

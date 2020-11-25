@@ -13,24 +13,41 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.TreeMap;
 
+/**
+ * Class {@code Library} stores a library with a list of Documents and a list of Authors.
+ */
 public class Library implements Serializable {
 
+    /**
+     * Seperation String between Documents' or Authors' instances
+     */
     private static final String sep = "||--------------------||";
 
     private TreeMap<String, Class<?>> typeOfDocuments;
     private final ArrayList<DocInterface> documents;
     private final ArrayList<Author> authors;
 
+    /**
+     * Constructor which initiates a Library instance.
+     */
     public Library() {
         setTypeOfDocuments();
         authors = new ArrayList<>();
         documents = new ArrayList<>();
     }
 
+    /**
+     * Getter for the Library's type of Documents.
+     *
+     * @return The Library's type of Documents with their String class name representation
+     */
     public TreeMap<String, Class<?>> getTypeOfDocuments() {
         return typeOfDocuments;
     }
 
+    /**
+     * Set the Library's type of Documents.
+     */
     private void setTypeOfDocuments() {
         this.typeOfDocuments = new TreeMap<>();
 
@@ -42,18 +59,43 @@ public class Library implements Serializable {
     }
 
 
+    /**
+     * Getter for the Library's Documents.
+     *
+     * @return The Library's Documents' instances
+     */
     public ArrayList<DocInterface> getDocuments() {
         return documents;
     }
 
+    /**
+     * Getter for the Library's Document in position {@code index}.
+     *
+     * @param index position of the {@code Document}
+     * @return The Library's Document's instance in position {@code index}
+     */
     public DocInterface getDocument(int index) {
         return documents.get(index);
     }
 
+    /**
+     * Getter for the Library's Document with code value equals {@code code}.
+     *
+     * @param code Code of the {@code Document}
+     * @return The Library's Document's instance with code value equals {@code code}
+     * @throws IndexOutOfBoundsException If the document does not exist
+     */
     public DocInterface getDocument(String code) throws IndexOutOfBoundsException {
         return documents.get(findDocumentByCode(code));
     }
 
+    /**
+     * Getter for the Library's Documents with title value contains {@code title}.
+     *
+     * @param title Title of the {@code Document}
+     * @return The Library's Documents' instances with title value contains {@code title}
+     * @throws IllegalArgumentException If no document has found
+     */
     public ArrayList<DocInterface> getDocumentWithTitle(String title) throws IllegalArgumentException {
         ArrayList<DocInterface> docs = new ArrayList<>();
 
@@ -62,15 +104,34 @@ public class Library implements Serializable {
         return docs;
     }
 
+    /**
+     * Getter for the Library's Authors.
+     *
+     * @return The Library's Authors' instances
+     */
     public ArrayList<Author> getAuthors() {
         return authors;
     }
 
+    /**
+     * Getter for the Library's Author with name value equals {@code name}.
+     *
+     * @param name Name of the {@code Author}
+     * @return The Library's Author's instance with code value equals {@code code}
+     * @throws IndexOutOfBoundsException If the {@code author} does not exist
+     */
     public Author getAuthor(String name) throws IndexOutOfBoundsException {
         return authors.get(findAuthor(name));
     }
 
 
+    /**
+     * Adds a new document to the documents' {@code ArrayList} instance.
+     * Throws {@code IllegalArgumentException} if the {@code document} already exists in the {@code ArrayList} instance.
+     *
+     * @param document The {@code Document} that will be added
+     * @throws IllegalArgumentException If the {@code document} already exists in the {@code ArrayList} instance
+     */
     public void addDocument(DocInterface document) throws IllegalArgumentException {
         if (documents.contains(document))
             throw new IllegalArgumentException();
@@ -78,6 +139,13 @@ public class Library implements Serializable {
         documents.add(document);
     }
 
+    /**
+     * Adds a new author to the authors' {@code ArrayList} instance.
+     * Throws {@code IllegalArgumentException} if the {@code author} already exists in the {@code ArrayList} instance.
+     *
+     * @param author The {@code Author} that will be added
+     * @throws IllegalArgumentException If the {@code author} already exists in the {@code ArrayList} instance
+     */
     public void addAuthor(Author author) throws IllegalArgumentException {
         if (authors.contains(author))
             throw new IllegalArgumentException();
@@ -86,17 +154,34 @@ public class Library implements Serializable {
     }
 
 
+    /**
+     * Removes an existing document from the documents' {@code ArrayList} instance.
+     * Throws {@code IndexOutOfBoundsException} if the {@code document} does not exist in the {@code ArrayList} instance.
+     *
+     * @param code The code of the {@code Document} that will be removed
+     * @throws IndexOutOfBoundsException If the {@code document} does not exist in the {@code ArrayList} instance
+     */
     public void deleteDocument(String code) throws IndexOutOfBoundsException {
         getDocument(code).remove();
         documents.remove(findDocumentByCode(code));
     }
 
-    public void deleteAllDocuments() throws IndexOutOfBoundsException {
+    /**
+     * Removes all documents from the documents' {@code ArrayList} instance.
+     */
+    public void deleteAllDocuments() {
         for (int i = documents.size() - 1; i >= 0; i--) {
             deleteDocument(documents.get(i).getCode());
         }
     }
 
+    /**
+     * Removes an existing author from the authors' {@code ArrayList} instance.
+     * Throws {@code IndexOutOfBoundsException} if the {@code author} does not exist in the {@code ArrayList} instance.
+     *
+     * @param name The code of the {@code Document} that will be removed
+     * @throws IndexOutOfBoundsException If the {@code author} does not exist in the {@code ArrayList} instance
+     */
     public void deleteAuthor(String name) throws IndexOutOfBoundsException {
         authors.remove(findAuthor(name));
     }
