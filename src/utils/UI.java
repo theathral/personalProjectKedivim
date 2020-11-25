@@ -95,7 +95,7 @@ public class UI {
     private static ZonedDateTime inputDate(String msg) {
         do {
             try {
-                return MyUtilities.checkDate(inputLine(msg));
+                return MyUtilities.convertToDate(inputLine(msg));
             } catch (Exception ignored) {
             }
         } while (true);
