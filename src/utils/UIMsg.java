@@ -310,4 +310,10 @@ public class UIMsg {
         return "Which attribute do you want to modify? (Enter a number)" + line()
                 + objListMsg(attributes);
     }
+
+    public static String dummyData() {
+        return "Do you want to add dummy data to the program? (Enter a number)"+ line()
+                + "1 -> Add Dummy Data" + line()
+                + "0 -> No, don't add" + line();
+    }
 }

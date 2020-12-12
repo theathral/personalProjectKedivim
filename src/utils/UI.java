@@ -22,11 +22,17 @@ public class UI {
     private static Library library = new Library();
     private static final Scanner scanner = new Scanner(System.in);
 
+    /**
+     * Main function for the start of the program.
+     * It prints the welcome message and starts a loop with all the accepted commands.
+     *
+     * @param args Command line arguments
+     */
     public static void main(String[] args) {
-        dummyData();
-
         System.out.println(UIMsg.welcomeMsg());
         pressEnter();
+
+        dummyData();
 
         ArrayList<String> choiceList = new ArrayList<>(Arrays.asList("Load Database", "Save to Database", "Documents", "Authors", "Statistics", "EXIT PROGRAM"));
         do {
@@ -47,11 +53,23 @@ public class UI {
         } while (true);
     }
 
+    /**
+     * It incites the user to press "Enter" button in order to continue the execution of the program.
+     */
     private static void pressEnter() {
         System.out.print("Press enter to continue...");
         scanner.nextLine();
     }
 
+    /**
+     * It prints a message at the cmd and waits for an integer input
+     * from the user [{@code min}, {@code max}] until the input is correct and returns it.
+     *
+     * @param msg The message to be printed
+     * @param min The minimum value that is acceptable
+     * @param max The maximum value that is acceptable
+     * @return The user's input
+     */
     private static int inputChoiceRange(String msg, int min, int max) {
         do {
             try {
@@ -62,6 +80,13 @@ public class UI {
         } while (true);
     }
 
+    /**
+     * It prints a message at the cmd and waits for an integer input
+     * from the user [1 for {@code true}, 0 for {@code false}] until the input is correct and returns it.
+     *
+     * @param msg The message to be printed
+     * @return The user's input
+     */
     private static boolean inputChoiceBoolean(String msg) {
         do {
             try {
@@ -72,6 +97,14 @@ public class UI {
         } while (true);
     }
 
+    /**
+     * It prints a message at the cmd and waits for an integer input
+     * from the user [{@code min}, {@code infinity}] until the input is correct and returns it.
+     *
+     * @param msg The message to be printed
+     * @param min The minimum value that is acceptable
+     * @return The user's input
+     */
     private static int inputChoiceMin(String msg, int min) {
         do {
             try {
@@ -82,7 +115,14 @@ public class UI {
         } while (true);
     }
 
-    private static String inputLine(String msg) throws IllegalArgumentException {
+    /**
+     * It prints a message at the cmd and waits for a text input
+     * from the user until the input is not empty and returns it.
+     *
+     * @param msg The message to be printed
+     * @return The user's input
+     */
+    private static String inputLine(String msg) {
         do {
             try {
                 System.out.print(msg);
@@ -92,6 +132,13 @@ public class UI {
         } while (true);
     }
 
+    /**
+     * It prints a message at the cmd and waits for a date input
+     * from the user until the input dd-mm-YYYY has given and returns a {@code ZonedDateTime} instance.
+     *
+     * @param msg The message to be printed
+     * @return The user's input
+     */
     private static ZonedDateTime inputDate(String msg) {
         do {
             try {
@@ -101,6 +148,12 @@ public class UI {
         } while (true);
     }
 
+    /**
+     * Confirmation message if somebody wants to exit the program.
+     * If answer is yes, the user also is asked if he wants to save the library to a binary file.
+     *
+     * @return {@code True}, if the user is about to exit. {@code False}, otherwise.
+     */
     private static boolean exit() {
         if (inputChoiceBoolean(UIMsg.exitMsg())) {
             saveToDBBeforeExit();
@@ -109,11 +162,20 @@ public class UI {
         return false;
     }
 
+    /**
+     * Confirmation message if somebody wants to save the library to a binary file
+     * before he exits the program.
+     * If answer is yes, the library is saved to a binary file.
+     */
     private static void saveToDBBeforeExit() {
         if (inputChoiceBoolean(UIMsg.saveToDBMsg("database")))
             saveToDB();
     }
 
+    /**
+     * It loads a library database from a file to the program.
+     * User is asked if he wants to load the default name file or a custom one.
+     */
     private static void loadDB() {
         ArrayList<String> choiceList = new ArrayList<>(Arrays.asList("Default file", "Custom file", "Cancel"));
 
@@ -141,6 +203,10 @@ public class UI {
         } while (true);
     }
 
+    /**
+     * It saves a library database to a binary file at the system.
+     * If the file already exists, user is asked if he wants to override it.
+     */
     private static void saveToDB() {
         do {
             try {
@@ -157,6 +223,10 @@ public class UI {
         } while (true);
     }
 
+    /**
+     * It prints a search query to the cmd and based on the answer of the user,
+     * the program saves (or not) the text of the search to a .txt file at the system.
+     */
     private static void printSearchAndSaveToDB(String searchResult) {
         String filePath = SEARCH_PATH + System.currentTimeMillis() + TXT;
 
@@ -172,6 +242,10 @@ public class UI {
     }
 
 
+    /**
+     * Document function for the actions to the documents.
+     * It starts a loop with all the accepted commands.
+     */
     private static void documents() {
         ArrayList<String> choiceList = new ArrayList<>(Arrays.asList("Print All", "Search Document", "Add Document", "Modify Document", "Delete Document", "DELETE ALL DOCUMENTS", "Back to Main Menu"));
 
@@ -192,6 +266,10 @@ public class UI {
         } while (true);
     }
 
+    /**
+     * It prints the accepted ways to search for a document
+     * and based on the answers of the user, it prints the results.
+     */
     private static void searchAndPrintDocument() {
         ArrayList<String> choiceList = new ArrayList<>(Arrays.asList("Code", "Title", "Cancel"));
         ArrayList<String> choiceExcList = new ArrayList<>(Arrays.asList("Try something else", "Add Document", "Cancel"));
@@ -227,6 +305,13 @@ public class UI {
         while (true);
     }
 
+    /**
+     * It searches for a document and returns it.
+     * If the document does not exist, it asks if the user wants to do another search.
+     *
+     * @param action The action that is going to be executed on this document.
+     * @return The document that has been found
+     */
     private static DocInterface searchDocument(String action) {
         do {
             try {
@@ -235,11 +320,16 @@ public class UI {
             } catch (IndexOutOfBoundsException e) {
                 if (!inputChoiceBoolean(UIMsg.objectNotFoundMsg("Document")))
                     return null;
-            } catch (IllegalArgumentException ignored) {
             }
         } while (true);
     }
 
+    /**
+     * It searches for an document and returns its code.
+     * If the document does not exist, it asks if the user wants to do another search.
+     *
+     * @return The code of the document that has been found
+     */
     private static String searchDocumentCode(String typeDoc) {
         do {
             try {
@@ -255,6 +345,12 @@ public class UI {
         } while (true);
     }
 
+    /**
+     * It adds a new document to the program.
+     * The user gives the title, year, number of pages and number of copies of the document.
+     * Then, based on the type of the document, the program asks also for the additional characteristics of the document.
+     * If the document already exists (based on the code), it asks for a new code or aborts the addition.
+     */
     private static void addDocument() {
         ArrayList<String> typeKeys = new ArrayList<>(library.getTypeOfDocuments().keySet());
         typeKeys.add("Cancel");
@@ -320,6 +416,11 @@ public class UI {
         }
     }
 
+    /**
+     * It adds the authors of a new document to the program (maximum 5 authors).
+     * The user gives the name of the authors that wants to be added.
+     * If the author does not exist (based on the name), it asks for a new name or aborts the addition.
+     */
     private static ArrayList<Author> addBookAuthors() {
         ArrayList<String> choiceList = new ArrayList<>(Arrays.asList("Add more", "No, continue with the other attributes", "Cancel"));
 
@@ -347,6 +448,11 @@ public class UI {
         } while (true);
     }
 
+    /**
+     * It modifies an existing document of the program.
+     * The user gives the code of the document, the attribute that wants to modify and the new value.
+     * If the document does not exist (based on the code), it asks for a new code or aborts the modification.
+     */
     private static void modifyDocument() {
         DocInterface modDoc = searchDocument("modify");
         if (modDoc == null)
@@ -370,6 +476,12 @@ public class UI {
         }
     }
 
+    /**
+     * Creates the list of properties that the user can modify, based on the type the document.
+     *
+     * @param modDocClass Type of the document
+     * @return The list of properties
+     */
     private static ArrayList<String> modifyDocumentAttributes(String modDocClass) {
         ArrayList<String> attributes = new ArrayList<>(Arrays.asList("Code", "Title", "Year", "Number of Pages", "Number of Copies"));
 
@@ -389,6 +501,12 @@ public class UI {
         return attributes;
     }
 
+    /**
+     * It modifies the authors' list of an existing Book document of the program.
+     * The user gives the action (add or delete), the name of the author that wants to add or delete.
+     * If the authors are 5, the user cannot add another one.
+     * If the author is 1, the user cannot delete the author.
+     */
     private static void modifyAuthorDocument(Book document) {
         ArrayList<String> choiceList = new ArrayList<>(Arrays.asList("Add New", "Delete", "Cancel"));
 
@@ -435,6 +553,14 @@ public class UI {
         while (true);
     }
 
+    /**
+     * It modifies an existing Document of the program.
+     * The user gives the attribute that wants to modify and the new value.
+     *
+     * @param document The document that is about to be modified
+     * @param attr     The attribute of the document that is about to be modified
+     * @param type     Type of the Document
+     */
     private static void modifyDocumentClass(Document document, String attr, String type) {
         switch (attr) {
             case "Code" -> {
@@ -450,6 +576,14 @@ public class UI {
         }
     }
 
+    /**
+     * It modifies an existing Paper document of the program.
+     * The user gives the attribute that wants to modify and the new value.
+     *
+     * @param document The document that is about to be modified
+     * @param attr     The attribute of the document that is about to be modified
+     * @param type     Type of the Paper document
+     */
     private static void modifyPaperClass(Paper document, String attr, String type) {
         switch (attr) {
             case "Publisher" -> document.setPublisher(inputLine(UIMsg.inputMsg("new Publisher", type)));
@@ -459,6 +593,13 @@ public class UI {
         }
     }
 
+    /**
+     * It modifies an existing Book document of the program.
+     * The user gives the attribute that wants to modify and the new value.
+     *
+     * @param document The document that is about to be modified
+     * @param attr     The attribute of the document that is about to be modified
+     */
     private static void modifyBookClass(Book document, String attr) {
         if (attr.equals("Authors"))
             modifyAuthorDocument(document);
@@ -466,6 +607,13 @@ public class UI {
             modifyPaperClass(document, attr, "Book");
     }
 
+    /**
+     * It modifies an existing Journal document of the program.
+     * The user gives the attribute that wants to modify and the new value.
+     *
+     * @param document The document that is about to be modified
+     * @param attr     The attribute of the document that is about to be modified
+     */
     private static void modifyJournalClass(Journal document, String attr) {
         switch (attr) {
             case "Volume" -> document.setVolume(inputChoiceMin(UIMsg.inputMsg("new Volume", "Journal"), 1));
@@ -475,6 +623,14 @@ public class UI {
         }
     }
 
+    /**
+     * It modifies an existing Thesis document of the program.
+     * The user gives the attribute that wants to modify and the new value.
+     *
+     * @param document The document that is about to be modified
+     * @param attr     The attribute of the document that is about to be modified
+     * @param type     Type of the Thesis document
+     */
     private static void modifyThesisClass(Thesis document, String attr, String type) {
         switch (attr) {
             case "Author" -> {
@@ -492,6 +648,11 @@ public class UI {
         }
     }
 
+    /**
+     * It deletes an existing document from the program.
+     * The user gives the code of the document and confirms the deletion.
+     * If the document does not exist (based on the code), it asks for a new code or aborts the deletion.
+     */
     private static void deleteDocument() {
         DocInterface delDoc = searchDocument("delete");
         if (delDoc == null)
@@ -501,12 +662,20 @@ public class UI {
             library.deleteDocument(delDoc.getCode());
     }
 
+    /**
+     * It deletes all the existing documents from the program.
+     * The user confirms the deletion.
+     */
     private static void deleteAllDocuments() {
         if (inputChoiceBoolean(UIMsg.objectDeletionMsg("ALL DOCUMENTS" + System.lineSeparator(), "Document")))
             library.deleteAllDocuments();
     }
 
 
+    /**
+     * Author function for the actions to the authors.
+     * It starts a loop with all the accepted commands.
+     */
     private static void authors() {
         ArrayList<String> choiceList = new ArrayList<>(Arrays.asList("Print All", "Search Author", "Add Author", "Modify Author", "Delete Author", "Back to Main Menu"));
 
@@ -526,6 +695,10 @@ public class UI {
         } while (true);
     }
 
+    /**
+     * It prints the accepted ways to search for an author
+     * and based on the answers of the user, it prints the results.
+     */
     private static void searchAndPrintAuthor() {
         ArrayList<String> choiceList = new ArrayList<>(Arrays.asList("Try something else", "Add Author", "Cancel"));
 
@@ -551,6 +724,13 @@ public class UI {
         } while (true);
     }
 
+    /**
+     * It searches for an author and returns it.
+     * If the author does not exist, it asks if the user wants to do another search.
+     *
+     * @param action The action that is going to be executed on this author.
+     * @return The author that has been found
+     */
     private static Author searchAuthor(String action) {
         do {
             try {
@@ -564,6 +744,12 @@ public class UI {
         } while (true);
     }
 
+    /**
+     * It searches for an author and returns its name.
+     * If the author does not exist, it asks if the user wants to do another search.
+     *
+     * @return The name of the author that has been found
+     */
     private static String searchNameAuthor() {
         do {
             try {
@@ -578,6 +764,11 @@ public class UI {
         } while (true);
     }
 
+    /**
+     * It adds a new author to the program.
+     * The user gives the name, date of birth and the description of the author.
+     * If the author already exists (based on the name), it asks for a new name or aborts the addition.
+     */
     private static void addAuthor() {
         String name = searchNameAuthor();
         if (name == null)
@@ -591,6 +782,11 @@ public class UI {
             library.addAuthor(newAuthor);
     }
 
+    /**
+     * It modifies an existing author of the program.
+     * The user gives the name of the author, the attribute that wants to modify and the new value.
+     * If the author does not exist (based on the name), it asks for a new name or aborts the modification.
+     */
     private static void modifyAuthor() {
         Author modAuthor = searchAuthor("modify");
         if (modAuthor == null)
@@ -613,6 +809,12 @@ public class UI {
         }
     }
 
+    /**
+     * It deletes an existing author from the program.
+     * The user gives the name of the author and confirms the deletion.
+     * If the author does not exist (based on the name), it asks for a new name or aborts the deletion.
+     * If the author exists in at least one document, the action is aborted.
+     */
     private static void deleteAuthor() {
         Author delAuthor;
 
@@ -637,24 +839,31 @@ public class UI {
             library.deleteAuthor(delAuthor.getName());
     }
 
+
+    /**
+     * Dummy data for the library
+     */
     private static void dummyData() {
-        library.addAuthor(new Author("Theodosius", new GregorianCalendar(1998, Calendar.MAY, 15).toZonedDateTime(), "One of the best"));
-        library.addAuthor(new Author("Niki", new GregorianCalendar(1972, Calendar.JANUARY, 22).toZonedDateTime(), "One of the best"));
-        library.addAuthor(new Author("Rallies", new GregorianCalendar(1964, Calendar.FEBRUARY, 27).toZonedDateTime(), "One of the best"));
+        if (!inputChoiceBoolean(UIMsg.dummyData()))
+            return;
+
+        library.addAuthor(new Author("Theodosis", new GregorianCalendar(1998, Calendar.MAY, 15).toZonedDateTime(), "One of the best"));
+        library.addAuthor(new Author("Niki", new GregorianCalendar(2000, Calendar.JANUARY, 22).toZonedDateTime(), "One of the best"));
+        library.addAuthor(new Author("Rallis", new GregorianCalendar(2001, Calendar.FEBRUARY, 27).toZonedDateTime(), "One of the best"));
         library.addAuthor(new Author("Panos", new GregorianCalendar(1998, Calendar.SEPTEMBER, 17).toZonedDateTime(), "One of the best"));
         library.addAuthor(new Author("Nikos", new GregorianCalendar(1998, Calendar.APRIL, 6).toZonedDateTime(), "One of the best"));
         library.addAuthor(new Author("George", new GregorianCalendar(1998, Calendar.APRIL, 27).toZonedDateTime(), "One of the best"));
 
-        library.addDocument(new Book("1001", "aBook", 1998, 100, 100,
+        library.addDocument(new Book("1001", "Book", 1998, 100, 100,
                 "Someone", "0001", new ArrayList<>(Arrays.asList(library.getAuthor("Panos"), library.getAuthor("Nikos")))));
-        library.addDocument(new Journal("1002", "aJournal", 2000, 100, 100,
+        library.addDocument(new Journal("1002", "Journal", 2000, 100, 100,
                 "Someone", "0001", 1, 1));
-        library.addDocument(new BachelorThesis("1003", "aBachelor", 1998, 100, 100,
-                library.getAuthor("Theodosius"), "somebody", "Theodosius", "AUTH"));
-        library.addDocument(new MasterThesis("1004", "aMaster", 1972, 100, 100,
+        library.addDocument(new BachelorThesis("1003", "Bachelor", 1998, 100, 100,
+                library.getAuthor("Theodosis"), "somebody", "Theodosius", "AUTH"));
+        library.addDocument(new MasterThesis("1004", "Master", 1972, 100, 100,
                 library.getAuthor("Niki"), "Somebody", "Theodosius", "AUTH"));
-        library.addDocument(new DoctoralThesis("1005", "aDoctoral", 1964, 100, 100,
-                library.getAuthor("Rallies"), "Somebody", "CSD", "AUTH"));
+        library.addDocument(new DoctoralThesis("1005", "Doctoral", 1964, 100, 100,
+                library.getAuthor("Rallis"), "Somebody", "CSD", "AUTH"));
 
     }
 }
